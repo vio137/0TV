@@ -49,6 +49,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.Android
 import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.CheckCircle
@@ -192,7 +193,7 @@ fun TvPicture(width: androidx.compose.ui.unit.Dp = 92.dp) {
 
 /** Card for one TV in the scan list and on My TVs. */
 @Composable
-fun TvCard(title: String, subtitle: String, onClick: (() -> Unit)? = null, trailing: (@Composable () -> Unit)? = null, preview: dev.tidytv.app.TvPreview = dev.tidytv.app.TvPreview(), onRefresh: (() -> Unit)? = null) {
+fun TvCard(title: String, subtitle: String, onClick: (() -> Unit)? = null, trailing: (@Composable () -> Unit)? = null, preview: dev.tidytv.app.TvPreview = dev.tidytv.app.TvPreview()) {
     val src = androidx.compose.runtime.remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
     Row(
         Modifier.fillMaxWidth().pressScale(src, onClick != null).clip(RoundedCornerShape(16.dp)).background(Tidy.Card)
@@ -201,21 +202,7 @@ fun TvCard(title: String, subtitle: String, onClick: (() -> Unit)? = null, trail
             .heightIn(min = 72.dp).padding(14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(Modifier.width(112.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            val picture = preview.image
-            val frame = Modifier.size(112.dp, 63.dp).clip(RoundedCornerShape(8.dp)).background(Tidy.Backdrop)
-            if (picture != null) {
-                androidx.compose.foundation.Image(picture.asImageBitmap(), "Screen captured from $title", frame,
-                    contentScale = androidx.compose.ui.layout.ContentScale.Fit)
-            } else Box(frame, contentAlignment = Alignment.Center) {
-                Text(if (preview.loading) "Capturing..." else "No capture", style = MaterialTheme.typography.labelSmall, color = Tidy.Muted)
-            }
-            if (onRefresh != null) androidx.compose.material3.TextButton(onClick = onRefresh, enabled = !preview.loading,
-                modifier = Modifier.heightIn(min = 48.dp)) {
-                Text(if (preview.capturedAt != null) java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date(preview.capturedAt)) + " · Refresh" else "Refresh",
-                    style = MaterialTheme.typography.labelSmall)
-            }
-        }
+        TvPreviewFrame(title, preview)
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.titleLarge, color = Tidy.Ink)
@@ -238,3 +225,33 @@ fun Badge(color: Color, glyph: String) {
 @Composable
 fun Outline(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) =
     CardBox(modifier, border = Tidy.Line, content = content)
+
+/** A quiet TV bezel is shared by the waiting symbol and the saved screen. */
+@Composable
+fun TvPreviewFrame(title: String, preview: dev.tidytv.app.TvPreview) {
+    Column(Modifier.width(112.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(Modifier.size(112.dp, 67.dp).clip(RoundedCornerShape(7.dp)).background(Color(0xFF283345))
+            .border(1.dp, Color(0xFF536077), RoundedCornerShape(7.dp)).padding(4.dp)) {
+            val screen = Modifier.fillMaxSize().clip(RoundedCornerShape(3.dp)).background(Color(0xFF101C2E))
+            val image = preview.image
+            if (image != null) androidx.compose.foundation.Image(image.asImageBitmap(), "Saved screen from $title", screen,
+                contentScale = androidx.compose.ui.layout.ContentScale.Fit)
+            else AndroidTvWaiting(screen)
+        }
+        Box(Modifier.size(12.dp, 3.dp).background(Color(0xFF283345)))
+        Box(Modifier.size(36.dp, 3.dp).clip(RoundedCornerShape(2.dp)).background(Color(0xFF536077)))
+    }
+}
+
+@Composable
+private fun AndroidTvWaiting(modifier: Modifier) {
+    val reduce = LocalReduceMotion.current || androidx.compose.ui.platform.LocalInspectionMode.current
+    val transition = androidx.compose.animation.core.rememberInfiniteTransition(label = "Android TV waiting")
+    val glow = if (reduce) 1f else transition.animateFloat(0.55f, 1f,
+        androidx.compose.animation.core.infiniteRepeatable(androidx.compose.animation.core.tween(1400),
+            androidx.compose.animation.core.RepeatMode.Reverse), label = "Android glow").value
+    Box(modifier.semantics { contentDescription = "Android TV placeholder, waiting for a saved screen" }, contentAlignment = Alignment.Center) {
+        androidx.compose.material3.Icon(androidx.compose.material.icons.Icons.Rounded.Android, null,
+            Modifier.size(32.dp).graphicsLayer { alpha = glow }, tint = Color(0xFF9EDDB4))
+    }
+}

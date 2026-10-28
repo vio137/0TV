@@ -3,7 +3,7 @@ package dev.tidytv.app
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 
-/** Memory-only and owned by one selected TV session; never persisted or uploaded. */
+/** The selected device's private cached still; not a live video feed. */
 data class TvPreview(val image: Bitmap? = null, val capturedAt: Long? = null, val loading: Boolean = false) {
     companion object {
         fun decode(bytes: ByteArray): Bitmap? {

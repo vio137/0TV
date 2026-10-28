@@ -79,7 +79,6 @@ fun HubScreen(
     onApp2Tv: () -> Unit = {},
     facts: dev.tidytv.app.HubFacts = dev.tidytv.app.HubFacts(),
     preview: dev.tidytv.app.TvPreview = dev.tidytv.app.TvPreview(),
-    onRefreshPreview: () -> Unit = {},
 ) {
     val items = buildList {
         add(HubItem(Icons.Rounded.CleaningServices, "Tidy up", Tidy.Blue, Color.White, if (appsOff > 0) (if (appsOff == 1) "1 app switched off so far" else "$appsOff apps switched off so far") else null, onTidy))
@@ -97,7 +96,7 @@ fun HubScreen(
     val featured = items.first()
     val rest = items.drop(1)
     ScreenFrame(top = { Row(Modifier.fillMaxWidth()) { TextLink("Change TV", onBack, icon = Icons.AutoMirrored.Rounded.ArrowBack) } }) {
-        if (tv != null) TvCard(tv.title, tv.model, preview = preview, onRefresh = onRefreshPreview)
+        if (tv != null) TvCard(tv.title, tv.model, preview = preview)
         if (facts.any) dev.tidytv.app.ui.ChipRow(center = false) {
             facts.freeStorageMb?.let { dev.tidytv.app.ui.InfoChip(Icons.Rounded.Storage, "${gbOrMb(it)} free", color = Tidy.BlueSoft, textColor = Tidy.Ink) }
             facts.freeRamMb?.let { dev.tidytv.app.ui.InfoChip(Icons.Rounded.Memory, "${gbOrMb(it)} RAM free", color = Tidy.GreenSoft, textColor = Tidy.GreenInk) }

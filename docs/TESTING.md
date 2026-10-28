@@ -1,3 +1,17 @@
+# rc7 verification
+
+- Version 1.0.0-rc7 / versionCode 7, app.tvtidy.cleaner, min Android 8, target SDK 36.
+- Original signing certificate SHA-256: 3b5057c1ad574820ca80269cca1c0e798ae439e71f43729f3b7d54ca90fe9729.
+- APK: 24,594,054 bytes; SHA-256: 509f11536f5ba22034a8f4b0e681d44c83072744708dbad3132ba41840c2e760.
+- Core 310, ADB 14, app 154 tests pass (478 total, zero failures/errors).
+- Cache tests cover per-device isolation, persistence across app instances, renamed/readdressed devices with stable serial, fallback identity for missing serial, corrupt data and no repeat ADB capture for cached devices. Connection-change test verifies stale capture does not survive a TV change.
+- Actual Compose renders checked at 360dp and 320dp: TV bezel, saved-image fixture, Android waiting symbol, no timestamp/Refresh, storage and RAM chips preserved.
+- Clock-stepped rendered-pixel test proves the Android symbol animates before capture and a saved screenshot does not animate. Remove animations is respected.
+- Preview image files are synthetic fixtures, not captures from the user's TV. Physical phone/TV capture remains unverified. Firmware and protected content may prevent capture.
+- No physical TV settings, launcher or DNS were changed. This is a phone-only update; previous App2TV, launcher, DNS and backup features remain in place.
+
+## Previous release verification
+
 # rc6 verification
 
 - Version 1.0.0-rc6 / versionCode 6, app.tvtidy.cleaner, min Android 8, target SDK 36.

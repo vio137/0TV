@@ -401,6 +401,7 @@ class WizardViewModel(
     private var found: FoundTv? = null
     private val tvLock = Mutex()
 
+    private val previewCache = TvPreviewCache(store.tvPreviewsDir)
     private var previewJob: Job? = null
     private var previewSession = 0L
     private var scanJob: Job? = null
@@ -649,15 +650,16 @@ class WizardViewModel(
 
     // ---------- My TV hub ----------
 
-    /** Refresh only on entry or a tap, not background polling. Old sessions cannot publish a frame. */
+    /** Reuse the first successful still. Only uncached devices need a capture. */
     fun refreshTvPreview() {
-        if (previewJob?.isActive == true) return
+        if (previewJob?.isActive == true || _ui.value.tvPreview.image != null) return
         val selected = _ui.value.tv ?: return
         val activeShell = shell ?: return
         val session = previewSession
         _ui.update { it.copy(tvPreview = TvPreview(loading = true)) }
         previewJob = viewModelScope.launch {
-            val image = try {
+            val cached = withContext(imageWork) { previewCache.read(selected) }
+            val image = cached ?: try {
                 val bytes = withTimeoutOrNull(12_000) {
                     tvLock.withLock { dev.tidytv.core.ops.ScreenCapture.read(activeShell) }
                 }
@@ -667,7 +669,9 @@ class WizardViewModel(
                 null
             }
             if (session == previewSession && shell === activeShell && _ui.value.tv == selected) {
-                _ui.update { it.copy(tvPreview = TvPreview(image, if (image != null) System.currentTimeMillis() else null)) }
+                if (cached == null && image != null) withContext(imageWork) { previewCache.save(selected, image) }
+                if (session == previewSession && shell === activeShell && _ui.value.tv == selected)
+                    _ui.update { it.copy(tvPreview = TvPreview(image)) }
             }
         }
     }

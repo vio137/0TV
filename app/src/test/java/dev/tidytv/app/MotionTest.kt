@@ -56,6 +56,20 @@ class MotionTest {
     }
     private fun hub() = rule.setContent { TidyTheme { HubScreen(null, 0, false, {}, {}, {}, {}, {}, {}) } }
 
+    @Test fun androidPlaceholderAnimatesAndStopsWhenCaptured() {
+        rule.mainClock.autoAdvance = false
+        val preview = androidx.compose.runtime.mutableStateOf(TvPreview())
+        rule.setContent { TidyTheme { Box(Modifier.padding(24.dp)) { dev.tidytv.app.ui.TvPreviewFrame("Test TV", preview.value) } } }
+        rule.mainClock.advanceTimeBy(100); val a = frame()
+        rule.mainClock.advanceTimeBy(1000); val b = frame()
+        assertFalse("Android symbol visibly animates", same(a,b))
+        filmstrip("tv_android_animation", listOf("100 ms", "1100 ms"), listOf(a,b))
+        rule.runOnIdle { preview.value = TvPreview(Bitmap.createBitmap(160,90,Bitmap.Config.ARGB_8888).apply { eraseColor(Color.BLUE) }) }
+        rule.mainClock.advanceTimeBy(100); val captured = frame()
+        rule.mainClock.advanceTimeBy(1400)
+        assertTrue("a saved screen does not animate", same(captured,frame()))
+    }
+
     @Test fun hubEntranceAndPress() {
         rule.mainClock.autoAdvance = false
         hub()

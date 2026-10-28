@@ -76,7 +76,7 @@ The website has no analytics or third-party scripts. [Privacy and network detail
 | Version | 1.0.0-rc4 / versionCode 4 |
 | Package | `app.tvtidy.cleaner` |
 | APK size | 24,543,858 bytes |
-| SHA-256 | `49588c0c8fafb56d7cdf8b63b6eb17525cc0b6df9b54b2b40a4a0840e2dfec7c` |
+| SHA-256 | `11ec7586bae60d2710e8cb3c9d18fb384e1ddcfdfa31242712fcb7fde2e7d724` |
 
 ```sh
 sha256sum 0TV-1.0.0-rc4.apk

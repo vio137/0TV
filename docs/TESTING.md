@@ -3,7 +3,7 @@
 ## Release candidate 1.0.0-rc4
 
 - Companion package: `app.tvtidy.cleaner`, versionCode 4, minSdk 26, targetSdk 36.
-- Published APK SHA-256: `49588c0c8fafb56d7cdf8b63b6eb17525cc0b6df9b54b2b40a4a0840e2dfec7c`.
+- Published APK SHA-256: `11ec7586bae60d2710e8cb3c9d18fb384e1ddcfdfa31242712fcb7fde2e7d724`.
 - Size: 24,543,858 bytes.
 - Signing certificate SHA-256: `3b5057c1ad574820ca80269cca1c0e798ae439e71f43729f3b7d54ca90fe9729` (same as earlier releases, so it installs as an update).
 
@@ -16,7 +16,7 @@
 
 ### What was exercised
 
-Core tests: 297 passed. Companion unit and rendered-screen tests: 67 passed. The DNS setting behaviour was observed on a Xiaomi Mi Box 4 (Android 9) over ADB. The 0TV Home launcher was exercised on the same TV; public TV captures come from it and the network name is masked.
+Core tests: 297 passed. Companion unit and rendered-screen tests: 138 passed. The DNS setting behaviour was observed on a Xiaomi Mi Box 4 (Android 9) over ADB. The 0TV Home launcher was exercised on the same TV; public TV captures come from it and the network name is masked.
 
 ### What remains unproven
 

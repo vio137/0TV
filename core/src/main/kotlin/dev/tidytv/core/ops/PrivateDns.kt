@@ -20,7 +20,7 @@ data class DnsState(val mode: String?, val host: String?) {
     /** One plain line on what the TV is doing right now, shown on the Block ads screen. */
     fun headline(): String = when {
         provider != null -> "Private DNS is set to ${provider!!.blurb}"
-        custom -> "Using your DNS-over-TLS server: $host"
+        custom -> "Set to your DNS-over-TLS server: $host. Ad blocking depends on that server."
         mode == "opportunistic" -> "Automatic Private DNS. No ad blocking."
         mode == "off" || mode == null -> "Private DNS is off. No ad blocking."
         mode == "hostname" -> "Private DNS is set to a server name, but the name is empty."

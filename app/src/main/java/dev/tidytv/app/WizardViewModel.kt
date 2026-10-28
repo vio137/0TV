@@ -1382,8 +1382,8 @@ class WizardViewModel(
                 state == null -> RestoreUi.Finished("The TV stopped answering. Check it's on, then try again.", ok = false)
                 wanted != null && lookupFailed -> RestoreUi.Finished("The TV took the setting but couldn't look up names through $wanted, so it was put back. Check the server name, and that your network allows DNS-over-TLS (port 853).", ok = false)
                 wanted != null && !(state.mode == "hostname" && state.host.equals(wanted, true)) -> RestoreUi.Finished("This TV didn't accept the change, so it was left as it was.", ok = false)
-                wanted != null && state.provider != null -> RestoreUi.Finished("Ad blocking is on. The TV confirms it: ${state.host}.", ok = true)
-                wanted != null -> RestoreUi.Finished("Your DNS-over-TLS server is set. The TV confirms it: ${state.host}.", ok = true)
+                wanted != null && state.provider != null -> RestoreUi.Finished("AdGuard DNS is set on the TV (${state.host}) and names resolve through it.", ok = true)
+                wanted != null -> RestoreUi.Finished("Your DNS-over-TLS server is set on the TV (${state.host}) and names resolve through it. Whether it blocks ads depends on that server.", ok = true)
                 state.pinned -> RestoreUi.Finished("Your TV's DNS is back as it was before: ${state.host}.", ok = true)
                 else -> RestoreUi.Finished("Ad blocking is off. The TV now reports: ${state.headline()}", ok = true)
             }

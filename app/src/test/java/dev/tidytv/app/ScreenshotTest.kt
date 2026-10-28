@@ -109,13 +109,15 @@ class ScreenshotTest {
     @Test fun appsLoading() = shoot("15b_apps_loading", Step.APPS, UiState(tv = summary, apps = AppsState()))
     @Test fun adsOff() = shoot("14_ads_off", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, dns = dev.tidytv.core.ops.DnsState(null, null))))
     @Test fun adsOn() = shoot("14b_ads_on", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false,
-        dns = dev.tidytv.core.ops.DnsState("hostname", "dns.adguard-dns.com"), message = RestoreUi.Finished("Ad blocking is on. The TV confirms it: dns.adguard-dns.com.", ok = true))))
+        dns = dev.tidytv.core.ops.DnsState("hostname", "dns.adguard-dns.com"), message = RestoreUi.Finished("AdGuard DNS is set on the TV (dns.adguard-dns.com) and names resolve through it.", ok = true))))
     @Test fun adsReplaceAsk() = shoot("14c_ads_replace", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false,
         dns = dev.tidytv.core.ops.DnsState("hostname", "dns.quad9.net"), confirmReplace = dev.tidytv.core.ops.AdBlockProvider.ADS)))
     @Test fun adsAutomatic() = shoot("14e_ads_automatic", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, dns = dev.tidytv.core.ops.DnsState("opportunistic", "dns.adguard-dns.com"))))
     @Test fun adsCustom() = shoot("14f_ads_custom", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, lastCustom = "dns.example.com", dns = dev.tidytv.core.ops.DnsState("hostname", "dns.example.com"))))
     @Test fun adsLookupFailed() = shoot("14g_ads_lookup_failed", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, dns = dev.tidytv.core.ops.DnsState("opportunistic", null),
         message = RestoreUi.Finished("The TV took the setting but couldn't look up names through dead.example.com, so it was put back. Check the server name, and that your network allows DNS-over-TLS (port 853).", ok = false))))
+    @Test fun adsCustomTall() = shoot("14h_ads_custom_tall", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, lastCustom = "dns.example.com", dns = dev.tidytv.core.ops.DnsState("hostname", "dns.example.com"))), tall = 3)
+    @Test fun adsAutomaticTall() = shoot("14i_ads_automatic_tall", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, dns = dev.tidytv.core.ops.DnsState("opportunistic", null))), tall = 3)
     @Test fun adsOldTv() = shoot("14d_ads_old_tv", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, supported = false)))
     @Test fun spaceLoading() = shoot("13c_space_loading", Step.SPACE, UiState(tv = summary, space = SpaceState()))
 
@@ -164,7 +166,7 @@ class ScreenshotTest {
     @Test fun homeOfferPremium() = shoot("5c6_home_offer_premium", Step.HOME_SCREEN, UiState(
         home = HomeState.Offer(app = dev.tidytv.core.lists.HomeApp.PREMIUM, available = dev.tidytv.core.lists.HomeApp.entries)))
     @Test fun homeOfferPremiumAllCards() = shoot("5c7_home_offer_premium_tall", Step.HOME_SCREEN, UiState(
-        home = HomeState.Offer(app = dev.tidytv.core.lists.HomeApp.PREMIUM, available = dev.tidytv.core.lists.HomeApp.entries)), tall = 5)
+        home = HomeState.Offer(app = dev.tidytv.core.lists.HomeApp.PREMIUM, available = dev.tidytv.core.lists.HomeApp.entries)), tall = 3)
     @Test fun homeInstalledStyled() = shoot("5e_home_installed_styled", Step.HOME_SCREEN, UiState(home = HomeState.Installed(dev.tidytv.core.lists.HomeApp.STYLED)))
     @Test fun homeSetupApp() = shoot("5d_home_setup_app", Step.HOME_SCREEN, UiState(home = HomeState.Problem(
         "Google TV's setup app grabbed Home, so TidyTV put your old home screen back. It can turn the setup app off and try again.",

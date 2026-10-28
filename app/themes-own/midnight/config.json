@@ -1,0 +1,16 @@
+{
+  "background_color": "#05080F",
+  "wallpaper": true,
+  "wallpaper_dim": 10,
+  "cinematic_home": true,
+  "cinematic_white_focus": true,
+  "cinematic_art": 35,
+  "cinematic_scrim": 100,
+  "dock_glass": true,
+  "icon_only_buttons": true,
+  "focus_overshoot": false,
+  "reduced_motion": true,
+  "uniform_tiles": true,
+  "always_show_names": true,
+  "glass_style": "rim"
+}

@@ -1,0 +1,41 @@
+.gradle/
+.kotlin/
+build/
+local.properties
+.idea/
+*.iml
+.DS_Store
+app/build/
+dist/
+.taste-skill/
+assets/concepts/
+site/*.apk
+.wrangler/
+keys/
+*.idsig
+
+# Video project: keep sources, not heavy media
+videos/*/assets/phone/*.mp4
+videos/*/film/assets/phone/*.mp4
+videos/*/film/renders/
+videos/*/film/.hyperframes/
+videos/*/film/node_modules/
+videos/*/assets/tv/*.png
+videos/*/assets/tv/rooms/
+videos/*/assets/tv/screens/sheet.png
+
+# fastlane run output
+fastlane/report.xml
+fastlane/test_output/
+
+# Local credentials, device state and build output
+**/local.properties
+**/key.jks
+**/*.keystore
+**/*.jks
+keys/
+**/.kotlin/
+**/.gradle/
+**/out/
+**/build/
+**/signing.properties

@@ -1,0 +1,89 @@
+name: Build and test
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: ShellCheck
+        run: git ls-files '*.sh' | xargs shellcheck --severity=warning
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Android SDK packages
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0" >/dev/null
+      - name: Release signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.RELEASE_KEYSTORE }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then echo "$KEYSTORE_B64" | base64 -d > release.jks; fi
+      - name: Build
+        env:
+          KEYSTORE: ${{ secrets.RELEASE_KEYSTORE != '' && 'release.jks' || 'key.jks' }}
+          KEYSTORE_PASS: ${{ secrets.RELEASE_KEYSTORE_PASS || 'tvhome123' }}
+        run: sh build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tvhome-apk
+          path: out/tvhome.apk
+
+  emulator-test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [28, 30]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          name: tvhome-apk
+          path: out
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - name: Android TV emulator (API ${{ matrix.api }})
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          target: android-tv
+          arch: x86
+          profile: tv_1080p
+          disable-animations: true
+          script: sh ci/smoke-test.sh emulator-5554 smoke-api${{ matrix.api }}.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshot-api${{ matrix.api }}
+          path: smoke-api*.png
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [shellcheck, build, emulator-test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: tvhome-apk
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" tvhome.apk --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" --notes "Install with: sh install.sh <TV_IP>"

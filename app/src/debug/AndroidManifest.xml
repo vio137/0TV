@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug only: the Demo TV lends the phone's own copy of an app to show its real icon. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+        </intent>
+        <package android:name="com.google.android.feedback" />
+        <package android:name="com.google.android.youtube" />
+        <package android:name="com.google.android.play.games" />
+    </queries>
+</manifest>

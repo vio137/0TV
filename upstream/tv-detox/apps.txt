@@ -1,0 +1,9 @@
+# The apps on the top row of your home screen, in order. One package name per line.
+# Apps that aren't installed are skipped.
+# Not sure of a package name? Ask Claude: "What's the package name of <app> on my TV?"
+com.google.android.youtube.tv
+com.netflix.ninja
+com.amazon.amazonvideo.livingroom
+com.disney.disneyplus
+com.hulu.livingroomplus
+com.wbd.stream

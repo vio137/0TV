@@ -1,0 +1,42 @@
+TidyTV
+Copyright 2026 the TidyTV contributors. Licensed under the MIT License.
+
+This product includes work from:
+
+cleanyourtv (https://github.com/Gathin23/cleanyourtv), MIT License, Copyright (c) 2026 Gathin.
+  The per-model debloat lists (bundled as a snapshot from upstream/cleanyourtv/examples) and the
+  safety rules ported into core: list parsing, the setupwraith guard, disable/restore order.
+  The Apple TV style home screen, built from upstream/cleanyourtv/launcher by
+  tools/build-styled-home.sh and bundled as app/src/main/assets/launcher/cleanyourtv-home.apk.
+
+tv-detox (https://github.com/Ansub/tv-detox), MIT License, Copyright (c) 2026 Ansub Khan.
+  The home screen app bundled as app/src/main/assets/launcher/tvhome.apk (com.ansub.tvhome 1.5.7, versionCode 20, built from the recovered source snapshot in upstream/tv-detox) and the
+  install, undo and check patterns ported into core.
+
+Kadb (https://github.com/Flyfish233/Kadb), Apache License 2.0.
+  The ADB client used to talk to the TV.
+
+Simple Icons (https://simpleicons.org), CC0 1.0.
+  Brand marks in app/src/main/assets/icons.json. They are used only to identify each app; all
+  trademarks belong to their owners.
+
+Nunito (https://github.com/googlefonts/nunito), SIL Open Font License 1.1. See docs/OFL-Nunito.txt.
+
+TizenTubeCobalt (https://github.com/reisxd/TizenTubeCobalt), BSD-3-Clause.
+  Not bundled. Downloaded on request from the official release and verified before install.
+
+tizentube-bridge (https://github.com/TobiPeterG/tizentube-bridge), GPL-3.0.
+  Inspected for reference only. No code is included. It is not installed by this app.
+
+cleanyourtv-home (com.gathin.tvhome 3.0, MIT) is rebuilt-and-compared against upstream tag v3.0.0.
+The "Midnight" look in app/themes-own is original to this build.
+
+Licensing of the combined APK: this build includes spake2-java 1.1.1 (GPL-3.0, derived from code by
+Muntashir Al-Islam). The APK as a whole is therefore conveyed under the GNU General Public License
+v3.0 (see LICENSE-GPL-3.0.txt); the MIT, Apache-2.0 and other components keep their own notices.
+See docs/THIRD_PARTY_LICENSES.md and docs/BUILDING.md for the corresponding source.
+
+0TV modifications Copyright 2026 ARNAB MANDAL (arnabmandal.com). Upstream notices retained.
+
+0TV Home (app.tvtidy.home): modified cleanyourtv launcher based on v3.0.0. Source in launcher-fork/launcher. MIT upstream notices retained.
+Website Manrope font: Copyright 2018 The Manrope Project Authors; SIL OFL 1.1. See website/assets/OFL-Manrope.txt.

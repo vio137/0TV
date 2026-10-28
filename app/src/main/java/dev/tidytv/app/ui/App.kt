@@ -118,7 +118,7 @@ private fun StepScreen(step: Step, s: UiState, vm: WizardViewModel?, onShareLogs
         Step.RESCUE -> RescueScreen(s.rescue, { vm?.stopRescue() }, { s.rescue.tv?.let { vm?.startRescue(it) } }, { vm?.stopRescue() })
         Step.HUB -> HubScreen(
             s.tv, s.done.records.offByUs().count { !dev.tidytv.core.lists.Launchers.isHomeApp(it) }, s.wizard.kind == dev.tidytv.core.flow.TvKind.FIRE_TV,
-            { vm?.openTidy() }, { vm?.openRemote() }, { vm?.openFiles() }, { vm?.openHomeScreen() }, { vm?.openRestore() }, { vm?.back() }, { vm?.openCheck() }, { vm?.openSpace() }, { vm?.openAds() }, { vm?.openApps() }, { vm?.openCobalt() }, { vm?.openApp2Tv() }, s.hubFacts,
+            { vm?.openTidy() }, { vm?.openRemote() }, { vm?.openFiles() }, { vm?.openHomeScreen() }, { vm?.openRestore() }, { vm?.back() }, { vm?.openCheck() }, { vm?.openSpace() }, { vm?.openAds() }, { vm?.openApps() }, { vm?.openCobalt() }, { vm?.openApp2Tv() }, s.hubFacts, s.tvPreview, { vm?.refreshTvPreview() },
         )
         Step.REMOTE -> RemoteScreen(s.remote, s.tv?.title, { vm?.press(it) }, { vm?.type(it) }, { vm?.launchApp(it) }, { vm?.dismissRemoteMessage() }, { vm?.toHub() }, { vm?.togglePin(it) }, { p, d -> vm?.movePin(p, d) })
         Step.APP2TV -> dev.tidytv.app.ui.screens.App2TvScreen(s.app2tv, s.tv?.title, { vm?.setApp2TvQuery(it) }, { vm?.pickPhoneApp(it) }, { vm?.closePhoneApp() }, { vm?.sendPhoneApp() }, { vm?.toHub() })
@@ -146,7 +146,7 @@ private fun StepScreen(step: Step, s: UiState, vm: WizardViewModel?, onShareLogs
         Step.DONE -> DoneScreen(
             s.tv, s.done, s.tidy.disabledCount, s.wizard.mode == Mode.RESTORE, s.labels,
             { vm?.restoreEverything() }, { vm?.checkDebuggingOff() }, onShareLogs, { vm?.startOver() },
-            { vm?.turnOn(it) }, { vm?.toHub() }, { vm?.toHub(); vm?.openCheck() },
+            { vm?.turnOn(it) }, { vm?.toHub() }, { vm?.toHub(); vm?.openCheck() }, s.tvPreview,
         )
     }
 }

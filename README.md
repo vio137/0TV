@@ -8,11 +8,11 @@
 A calmer Android TV starts on your phone.<br>
 Review preloaded apps, keep a backup, and make room for a Home you actually want.
 
-<a href="https://github.com/vio137/0TV/releases/latest/download/0TV-1.0.0-rc5.apk"><img src="https://img.shields.io/badge/DOWNLOAD_0TV_APK-Android_8%2B-bcff69?style=for-the-badge&labelColor=14212c&color=bcff69" alt="DOWNLOAD 0TV APK - Android 8+"></a>
+<a href="https://github.com/vio137/0TV/releases/latest/download/0TV-1.0.0-rc6.apk"><img src="https://img.shields.io/badge/DOWNLOAD_0TV_APK-Android_8%2B-bcff69?style=for-the-badge&labelColor=14212c&color=bcff69" alt="DOWNLOAD 0TV APK - Android 8+"></a>
 
 **[Visit the project website ↗](https://vio137.github.io/0TV/)** · **[Install guide](docs/GUIDE.md)** · **[Latest release](https://github.com/vio137/0TV/releases/latest)**
 
-`1.0.0-rc5` · `Android phone companion` · `Free & open source`
+`1.0.0-rc6` · `Android phone companion` · `Free & open source`
 
 <img src="website/assets/tv-home.png" width="100%" alt="Real 0TV Home capture on Xiaomi Mi Box 4 showing Netflix focus and installed app banners">
 
@@ -77,13 +77,13 @@ The website has no analytics or third-party scripts. [Privacy and network detail
 
 | Item | Value |
 |---|---|
-| Version | 1.0.0-rc5 / versionCode 5 |
+| Version | 1.0.0-rc6 / versionCode 6 |
 | Package | `app.tvtidy.cleaner` |
-| APK size | 24,577,670 bytes |
-| SHA-256 | `606b7b4b5e88c91f9b94ab91e2f75ea5f608ccff6b444ce47fef66c00a07e901` |
+| APK size | 24,594,054 bytes |
+| SHA-256 | `beee0864c990027ae7b6a6aee29975791b222ec60d06b616f9c959e412e7548a` |
 
 ```sh
-sha256sum 0TV-1.0.0-rc5.apk
+sha256sum 0TV-1.0.0-rc6.apk
 ```
 
 Download from [this repository's releases](https://github.com/vio137/0TV/releases/latest), not a third-party reupload. Keep an existing installation's recovery history when updating.
@@ -124,3 +124,7 @@ Not affiliated with Google, Amazon, Netflix, YouTube or TV manufacturers. App lo
 ## Feedback
 
 [Open an issue](https://github.com/vio137/0TV/issues) with the model, Android version, app version and steps to reproduce. Inspect and redact logs and screenshots before posting anything public.
+
+### Selected-TV screen preview (rc6)
+
+My TV now captures a still screenshot over its existing ADB connection, next to the selected TV name and model. It refreshes on hub entry or a tap, with a local capture time. It is not a live stream. Capture failures and all-black frames show No capture. Screenshots stay in memory, are cleared on TV changes, and are not uploaded. Protected content may not appear. Physical-TV capture remains unverified.

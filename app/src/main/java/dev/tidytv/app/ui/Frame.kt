@@ -35,6 +35,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -191,7 +192,7 @@ fun TvPicture(width: androidx.compose.ui.unit.Dp = 92.dp) {
 
 /** Card for one TV in the scan list and on My TVs. */
 @Composable
-fun TvCard(title: String, subtitle: String, onClick: (() -> Unit)? = null, trailing: (@Composable () -> Unit)? = null) {
+fun TvCard(title: String, subtitle: String, onClick: (() -> Unit)? = null, trailing: (@Composable () -> Unit)? = null, preview: dev.tidytv.app.TvPreview = dev.tidytv.app.TvPreview(), onRefresh: (() -> Unit)? = null) {
     val src = androidx.compose.runtime.remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
     Row(
         Modifier.fillMaxWidth().pressScale(src, onClick != null).clip(RoundedCornerShape(16.dp)).background(Tidy.Card)
@@ -200,7 +201,21 @@ fun TvCard(title: String, subtitle: String, onClick: (() -> Unit)? = null, trail
             .heightIn(min = 72.dp).padding(14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TvPicture(84.dp)
+        Column(Modifier.width(112.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            val picture = preview.image
+            val frame = Modifier.size(112.dp, 63.dp).clip(RoundedCornerShape(8.dp)).background(Tidy.Backdrop)
+            if (picture != null) {
+                androidx.compose.foundation.Image(picture.asImageBitmap(), "Screen captured from $title", frame,
+                    contentScale = androidx.compose.ui.layout.ContentScale.Fit)
+            } else Box(frame, contentAlignment = Alignment.Center) {
+                Text(if (preview.loading) "Capturing..." else "No capture", style = MaterialTheme.typography.labelSmall, color = Tidy.Muted)
+            }
+            if (onRefresh != null) androidx.compose.material3.TextButton(onClick = onRefresh, enabled = !preview.loading,
+                modifier = Modifier.heightIn(min = 48.dp)) {
+                Text(if (preview.capturedAt != null) java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date(preview.capturedAt)) + " · Refresh" else "Refresh",
+                    style = MaterialTheme.typography.labelSmall)
+            }
+        }
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.titleLarge, color = Tidy.Ink)

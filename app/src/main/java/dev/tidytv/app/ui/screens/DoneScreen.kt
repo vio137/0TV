@@ -82,6 +82,7 @@ fun DoneScreen(
     onTurnOn: (String) -> Unit = {},
     onMyTv: () -> Unit = {},
     onCheck: () -> Unit = {},
+    preview: dev.tidytv.app.TvPreview = dev.tidytv.app.TvPreview(),
 ) {
     val restoring = s.restore is RestoreUi.Running
     val actions = LocalAppActions.current
@@ -114,7 +115,7 @@ fun DoneScreen(
             }
         }
         if (!restoreMode && s.homeUntested) UntestedHomeCard()
-        if (tv != null) TvCard(tv.title, listOf(tv.model.takeIf { it != tv.title }, tv.host).filterNotNull().joinToString("\n"))
+        if (tv != null) TvCard(tv.title, listOf(tv.model.takeIf { it != tv.title }, tv.host).filterNotNull().joinToString("\n"), preview = preview)
         when (val r = s.restore) {
             is RestoreUi.Running -> Row(verticalAlignment = Alignment.CenterVertically) {
                 Spinner(); Spacer(Modifier.width(10.dp)); Body("Turning things back on… ${r.count}")

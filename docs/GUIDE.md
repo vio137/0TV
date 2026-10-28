@@ -108,3 +108,7 @@ Use **Restore a TV** / **Restore Everything** after reconnecting to the same TV.
 ## Report a problem
 
 [Open an issue](https://github.com/vio137/0TV/issues) with TV model, Android version, app version, steps, expected result and actual result. Feedback in this build creates a file for Android's share sheet; it does not upload automatically. Inspect logs and screenshots before posting them publicly. Remove network names, addresses, account details and anything personal.
+
+## Selected-TV screen preview
+
+Open My TV after connecting to see a fresh still screenshot beside the TV name and model. Tap Refresh to capture again. The time under the image is the phone-local capture time, not a promise that the screen is still unchanged. No background polling or recording runs. Capture failure, invalid image data or an all-black frame shows No capture; DRM-protected video may be missing or blacked out. Change TV to clear the old frame. Captures stay in phone memory, are not included in logs and are never uploaded automatically. Temporary capture files on the TV are removed after reading, best effort if the connection drops.

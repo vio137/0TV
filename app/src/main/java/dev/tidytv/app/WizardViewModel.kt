@@ -329,6 +329,7 @@ data class UiState(
     val wizard: Wizard = Wizard(),
     val connect: ConnectState = ConnectState.Scanning(),
     val tv: TvSummary? = null,
+    val tvPreview: TvPreview = TvPreview(),
     val review: ReviewState = ReviewState(),
     val tidy: TidyState = TidyState(),
     val home: HomeState = HomeState.Offer(),
@@ -400,6 +401,8 @@ class WizardViewModel(
     private var found: FoundTv? = null
     private val tvLock = Mutex()
 
+    private var previewJob: Job? = null
+    private var previewSession = 0L
     private var scanJob: Job? = null
     private var connectJob: Job? = null
     private var allowTimer: Job? = null
@@ -550,6 +553,9 @@ class WizardViewModel(
     }
 
     private suspend fun onLinked(b: Backend, tv: FoundTv, s: TvShell) {
+        previewSession++
+        previewJob?.cancel()
+        _ui.update { it.copy(tvPreview = TvPreview()) }
         backend = b
         shell = s
         found = tv
@@ -602,6 +608,8 @@ class WizardViewModel(
     }
 
     private fun disconnect() {
+        previewSession++
+        previewJob?.cancel()
         scanJob?.cancel(); connectJob?.cancel(); allowTimer?.cancel()
         backend?.close(shell)
         shell = null
@@ -641,7 +649,31 @@ class WizardViewModel(
 
     // ---------- My TV hub ----------
 
+    /** Refresh only on entry or a tap, not background polling. Old sessions cannot publish a frame. */
+    fun refreshTvPreview() {
+        if (previewJob?.isActive == true) return
+        val selected = _ui.value.tv ?: return
+        val activeShell = shell ?: return
+        val session = previewSession
+        _ui.update { it.copy(tvPreview = TvPreview(loading = true)) }
+        previewJob = viewModelScope.launch {
+            val image = try {
+                val bytes = withTimeoutOrNull(12_000) {
+                    tvLock.withLock { dev.tidytv.core.ops.ScreenCapture.read(activeShell) }
+                }
+                bytes?.let { withContext(imageWork) { TvPreview.decode(it) } }
+            } catch (e: Exception) {
+                if (e is kotlinx.coroutines.CancellationException) throw e
+                null
+            }
+            if (session == previewSession && shell === activeShell && _ui.value.tv == selected) {
+                _ui.update { it.copy(tvPreview = TvPreview(image, if (image != null) System.currentTimeMillis() else null)) }
+            }
+        }
+    }
+
     private fun enterHub() {
+        refreshTvPreview()
         viewModelScope.launch {
             // Two quick reads; anything the TV doesn't answer is simply not shown.
             val facts = withShell { s ->

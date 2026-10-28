@@ -80,6 +80,19 @@ class WizardViewModelTest {
         if (tidy) { vm.openTidy(); advanceUntilIdle() }
     }
 
+    @Test fun thumbnailFailureIsHonestAndDisconnectClearsState() = runTest(dispatcher) {
+        val vm = vm(DemoBackend())
+        vm.choose(TvKind.ANDROID_TV)
+        connectToDemo(vm, tidy = false)
+        assertFalse(vm.ui.value.tvPreview.loading)
+        assertEquals(null, vm.ui.value.tvPreview.image)
+        vm.refreshTvPreview()
+        vm.back()
+        advanceUntilIdle()
+        assertEquals(TvPreview(), vm.ui.value.tvPreview)
+        assertEquals(null, vm.ui.value.tv)
+    }
+
     @Test fun cleanUpWithWifiDropThenHomeScreenThenRestore() = runTest(dispatcher) {
         val demo = DemoBackend()
         val tv: FakeTv = demo.tv

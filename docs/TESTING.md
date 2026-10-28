@@ -1,3 +1,15 @@
+# rc6 verification
+
+- Version 1.0.0-rc6 / versionCode 6, app.tvtidy.cleaner, min Android 8, target SDK 36.
+- APK: 24,594,054 bytes. SHA-256 `beee0864c990027ae7b6a6aee29975791b222ec60d06b616f9c959e412e7548a`.
+- Original signing certificate SHA-256 `3b5057c1ad574820ca80269cca1c0e798ae439e71f43729f3b7d54ca90fe9729` verified with apksigner.
+- Automated tests: core 310; ADB 14; app 150. Capture tests cover PNG validation, missing/oversized/truncated files, cleanup on failure, bounded decode, all-black rejection, and disconnect during capture.
+- Actual Compose renders inspected at 360dp and 320dp widths with capture, loading and unavailable states. Screen contents are synthetic fixtures, not a physical TV capture. RAM/storage chips preserved.
+- New screenshot path has not been verified on a physical phone and TV. Capture availability and protected-content behavior depend on firmware. No physical TV settings were changed for rc6.
+- rc5 App2TV transfer and launcher remote-key hardware limits still apply. Bundled launchers are unchanged.
+
+## Previous release verification
+
 # Testing and release scope
 
 ## Release candidate 1.0.0-rc5

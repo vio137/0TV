@@ -54,6 +54,10 @@ public class KonamiRenderTest {
     }
 
     @Test public void sequenceTogglesTheCrackAndAgainRestores() throws Exception {
+        java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Asia/Kolkata"));
+        java.util.Calendar fx = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("Asia/Kolkata"));
+        fx.clear(); fx.set(2026, java.util.Calendar.OCTOBER, 28, 19, 30, 0);
+        android.os.SystemClock.setCurrentTimeMillis(fx.getTimeInMillis());
         Activity a = Robolectric.buildActivity(MainActivity.class).setup().get();
         snap(a, "konami-1-before");
         assertFalse(overlayOn(a));

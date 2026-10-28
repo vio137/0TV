@@ -29,6 +29,10 @@ Review preloaded apps, keep a backup, and make room for a Home you actually want
 
 **One phone APK.** The companion handles installation of the chosen bundled launcher on the TV. Do not install the phone APK as though it were a standalone TV launcher.
 
+**App2TV.** Many apps are missing from the TV's app store. Install the app on your phone, open App2TV in My TV, pick it from the list, and 0TV copies it to the TV and installs it over the existing connection. It checks the TV first and explains any failure in plain English. See the guide for how it works and its limits.
+
+**Easter egg.** On 0TV Home, press Up, Up, Down, Down, Left, Right, Left, Right on the remote for a cracked-screen look. Press it again to undo.
+
 Normal cleanup disables selected packages. Separate removal tools have stronger recovery limits. Optional DNS filtering and optional TizenTube Cobalt installation are separate choices, not hidden cleanup steps.
 
 ## Get started

@@ -290,6 +290,27 @@ data class FilesState(
     val busy get() = items.any { it.status == SendStatus.SENDING || it.status == SendStatus.WAITING }
 }
 
+/** One app on the phone that App2TV can offer. */
+data class PhoneAppEntry(val pkg: String, val label: String)
+
+/** App2TV: pick an app on the phone, see whether the TV can take it, send it, read the result. */
+data class App2TvState(
+    val apps: List<PhoneAppEntry> = emptyList(),
+    val loaded: Boolean = false,
+    val query: String = "",
+    val selected: dev.tidytv.core.ops.PhoneApp? = null,
+    /** What the TV said about the selected app before sending, or null while it is being asked. */
+    val verdict: dev.tidytv.core.ops.App2Tv.Verdict? = null,
+    val stage: dev.tidytv.core.ops.App2Tv.Stage? = null,
+    val part: Int = 0,
+    val parts: Int = 0,
+    val resultText: String? = null,
+    val resultOk: Boolean = false,
+) {
+    val busy get() = stage != null
+    val shown get() = if (query.isBlank()) apps else apps.filter { it.label.contains(query.trim(), true) || it.pkg.contains(query.trim(), true) }
+}
+
 /** The optional TizenTube Cobalt install, step by step. Every state is something that actually happened. */
 sealed interface CobaltUi {
     data object Idle : CobaltUi
@@ -325,6 +346,7 @@ data class UiState(
     val check: CheckState = CheckState(),
     val space: SpaceState = SpaceState(),
     val ads: AdsState = AdsState(),
+    val app2tv: App2TvState = App2TvState(),
     val apps: AppsState = AppsState(),
     val hubFacts: HubFacts = HubFacts(),
     val rescue: RescueState = RescueState(),
@@ -355,6 +377,12 @@ class WizardViewModel(
     private val imageWork: kotlinx.coroutines.CoroutineDispatcher = kotlinx.coroutines.Dispatchers.Default,
     /** Reads package id, version and signing certificates out of a downloaded APK. Android only; null refuses to install. */
     private val apkIdentity: ((java.io.File) -> dev.tidytv.core.ops.Cobalt.ApkIdentity?)? = null,
+    /** App2TV: the launchable apps on this phone. Android only. */
+    private val phoneApps: () -> List<PhoneAppEntry> = { emptyList() },
+    /** App2TV: one phone app's package facts (APK files, versions, processor types). Android only. */
+    private val phoneApp: (String) -> dev.tidytv.core.ops.PhoneApp? = { null },
+    /** App2TV: opens one APK file of a phone app for sending. Android only. */
+    private val phoneApkOpen: (String, dev.tidytv.core.ops.PhoneApk) -> java.io.InputStream = { _, _ -> throw java.io.IOException("not on this phone") },
 ) : ViewModel() {
     private val _ui = MutableStateFlow(UiState())
     val ui: StateFlow<UiState> = _ui.asStateFlow()
@@ -398,6 +426,7 @@ class WizardViewModel(
             Step.REMOTE -> enterRemote()
             Step.SEND_FILES -> enterFiles()
             Step.COBALT -> enterCobalt()
+            Step.APP2TV -> enterApp2Tv()
             Step.CHECK -> recheck()
             Step.SPACE -> enterSpace()
             Step.ADS -> enterAds()
@@ -434,6 +463,7 @@ class WizardViewModel(
     fun openTidy() = wizard(WizardEvent.OpenTidy)
     fun openRemote() = wizard(WizardEvent.OpenRemote)
     fun openFiles() = wizard(WizardEvent.OpenFiles)
+    fun openApp2Tv() = wizard(WizardEvent.OpenApp2Tv)
     fun openCobalt() = wizard(WizardEvent.OpenCobalt)
     fun openHomeScreen() = wizard(WizardEvent.OpenHomeScreen)
     fun openRestore() = wizard(WizardEvent.OpenRestore)
@@ -885,6 +915,76 @@ class WizardViewModel(
     fun stopRescue() {
         rescueJob?.cancel()
         wizard(WizardEvent.Back)
+    }
+
+    // ---------- App2TV ----------
+
+    private var a2tJob: Job? = null
+
+    private fun enterApp2Tv() {
+        _ui.update { it.copy(app2tv = App2TvState()) }
+        viewModelScope.launch {
+            val list = withContext(imageWork) { runCatching { phoneApps() }.getOrDefault(emptyList()) }
+            _ui.update { it.copy(app2tv = it.app2tv.copy(apps = list.sortedBy { a -> a.label.lowercase() }, loaded = true)) }
+        }
+    }
+
+    fun setApp2TvQuery(q: String) = _ui.update { it.copy(app2tv = it.app2tv.copy(query = q)) }
+
+    /** Opens one phone app and asks the TV, before anything is sent, whether it can take it. */
+    fun pickPhoneApp(pkg: String) {
+        if (_ui.value.app2tv.busy) return
+        _ui.update { it.copy(app2tv = it.app2tv.copy(selected = null, verdict = null, resultText = null)) }
+        viewModelScope.launch {
+            val app = withContext(imageWork) { runCatching { phoneApp(pkg) }.getOrNull() }
+            if (app == null) {
+                _ui.update { it.copy(app2tv = it.app2tv.copy(resultText = "This app's files can't be read from the phone, so it can't be sent.", resultOk = false)) }
+                return@launch
+            }
+            _ui.update { it.copy(app2tv = it.app2tv.copy(selected = app)) }
+            val verdict = runCatching {
+                val s = shell ?: if (reconnect()) shell else null
+                if (s == null) null else tvLock.withLock {
+                    dev.tidytv.core.ops.App2Tv.check(app, dev.tidytv.core.ops.App2Tv.readTarget(s), dev.tidytv.core.ops.App2Tv.readTvCopy(s, app.pkg))
+                }
+            }.getOrNull() ?: dev.tidytv.core.ops.App2Tv.Verdict.Blocked("The TV isn't answering. Check it's on and connected, then pick the app again.")
+            if (_ui.value.app2tv.selected?.pkg == app.pkg) _ui.update { it.copy(app2tv = it.app2tv.copy(verdict = verdict)) }
+        }
+    }
+
+    fun closePhoneApp() {
+        if (_ui.value.app2tv.busy) return
+        _ui.update { it.copy(app2tv = it.app2tv.copy(selected = null, verdict = null, resultText = null)) }
+    }
+
+    fun sendPhoneApp() {
+        val app = _ui.value.app2tv.selected ?: return
+        if (_ui.value.app2tv.busy) return
+        _ui.update { it.copy(app2tv = it.app2tv.copy(stage = dev.tidytv.core.ops.App2Tv.Stage.CHECKING, part = 0, parts = app.apks.size, resultText = null)) }
+        a2tJob = viewModelScope.launch {
+            var out: dev.tidytv.core.ops.App2Tv.Outcome = dev.tidytv.core.ops.App2Tv.Outcome.Disconnected
+            for (attempt in 0..1) {
+                val s = shell ?: if (reconnect()) shell else null
+                if (s == null) break
+                out = tvLock.withLock {
+                    dev.tidytv.core.ops.App2Tv.send(s, app, { apk -> phoneApkOpen(app.pkg, apk) }, (log ?: _ui.value.tv?.serial?.let { store.actionLog(it) } ?: dev.tidytv.core.ops.MemoryActionLog()),
+                        onStage = { st, n, total -> _ui.update { it.copy(app2tv = it.app2tv.copy(stage = st, part = n, parts = total)) } })
+                }
+                if (out !is dev.tidytv.core.ops.App2Tv.Outcome.Disconnected) break
+                shell = null
+            }
+            trace.line("app2tv ${app.pkg}: ${out::class.simpleName}")
+            val (text, ok) = when (val o = out) {
+                is dev.tidytv.core.ops.App2Tv.Outcome.Installed ->
+                    ((if (o.updated) "Updated. " else "Installed. ") + dev.tidytv.core.ops.App2Tv.opensText(o.opens, o.label)) to true
+                is dev.tidytv.core.ops.App2Tv.Outcome.Blocked -> o.reason to false
+                is dev.tidytv.core.ops.App2Tv.Outcome.Failed -> o.why to false
+                is dev.tidytv.core.ops.App2Tv.Outcome.TransferMismatch -> "The copy of ${o.file} on the TV didn't match the phone's, so nothing was installed. Try again." to false
+                dev.tidytv.core.ops.App2Tv.Outcome.Unconfirmed -> "The TV's installer said it worked, but ${app.label} doesn't show up on the TV. Nothing else was changed. Try again." to false
+                dev.tidytv.core.ops.App2Tv.Outcome.Disconnected -> "The TV stopped answering. Check it's on and connected, then try again." to false
+            }
+            _ui.update { it.copy(app2tv = it.app2tv.copy(stage = null, resultText = text, resultOk = ok)) }
+        }
     }
 
     // ---------- Send files ----------

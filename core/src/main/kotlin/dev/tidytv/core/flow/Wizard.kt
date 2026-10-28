@@ -2,7 +2,7 @@ package dev.tidytv.core.flow
 
 enum class TvKind { ANDROID_TV, FIRE_TV, SAMSUNG_LG, NOT_SURE }
 
-enum class Step { WELCOME, UNSUPPORTED, GET_READY, CONNECT, HUB, REVIEW, TIDYING, HOME_SCREEN, DONE, REMOTE, SEND_FILES, CHECK, RESCUE, SPACE, ADS, APPS, COBALT }
+enum class Step { WELCOME, UNSUPPORTED, GET_READY, CONNECT, HUB, REVIEW, TIDYING, HOME_SCREEN, DONE, REMOTE, SEND_FILES, CHECK, RESCUE, SPACE, ADS, APPS, COBALT, APP2TV }
 
 enum class Mode { CLEAN, RESTORE }
 
@@ -34,6 +34,7 @@ sealed interface WizardEvent {
     data object OpenTidy : WizardEvent
     data object OpenRemote : WizardEvent
     data object OpenFiles : WizardEvent
+    data object OpenApp2Tv : WizardEvent
     data object OpenCobalt : WizardEvent
     data object OpenHomeScreen : WizardEvent
     data object OpenRestore : WizardEvent
@@ -67,6 +68,7 @@ object WizardReducer {
         WizardEvent.OpenTidy -> if (s.step == Step.HUB) s.copy(step = Step.REVIEW, mode = Mode.CLEAN) else s
         WizardEvent.OpenRemote -> if (s.step == Step.HUB) s.copy(step = Step.REMOTE) else s
         WizardEvent.OpenCobalt -> if (s.step == Step.HUB) s.copy(step = Step.COBALT) else s
+        WizardEvent.OpenApp2Tv -> if (s.step == Step.HUB) s.copy(step = Step.APP2TV) else s
         WizardEvent.OpenFiles -> if (s.step == Step.HUB) s.copy(step = Step.SEND_FILES) else s
         // Fire OS won't let another home screen take over.
         WizardEvent.OpenHomeScreen -> if (s.step == Step.HUB && s.kind != TvKind.FIRE_TV) s.copy(step = Step.HOME_SCREEN, mode = Mode.CLEAN) else s
@@ -100,7 +102,7 @@ object WizardReducer {
             // A saved TV skipped Get ready, so Back goes home instead.
             Step.CONNECT -> if (s.kind == null && s.mode == Mode.CLEAN) Wizard() else s.copy(step = Step.GET_READY)
             Step.HUB -> Wizard()
-            Step.REVIEW, Step.REMOTE, Step.SEND_FILES, Step.CHECK, Step.SPACE, Step.ADS, Step.APPS, Step.COBALT -> s.copy(step = Step.HUB)
+            Step.REVIEW, Step.REMOTE, Step.SEND_FILES, Step.CHECK, Step.SPACE, Step.ADS, Step.APPS, Step.COBALT, Step.APP2TV -> s.copy(step = Step.HUB)
             Step.RESCUE -> Wizard()
             // Changes are made: going back can't undo them, so Back goes to the summary.
             Step.TIDYING, Step.HOME_SCREEN -> s.copy(step = Step.DONE)

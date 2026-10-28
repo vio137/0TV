@@ -48,6 +48,9 @@ class MainActivity : ComponentActivity() {
                     looks = { id -> dev.tidytv.app.data.Looks.load(app.assets, id) },
                     photoWallpaper = { f -> dev.tidytv.app.data.Wallpaper.fromPhoto(f.size) { f.open() } },
                     apkIdentity = { f -> dev.tidytv.app.data.CobaltApk.identity(app, f) },
+                    phoneApps = { dev.tidytv.app.data.PhoneApps.list(app) },
+                    phoneApp = { pkg -> dev.tidytv.app.data.PhoneApps.load(app, pkg) },
+                    phoneApkOpen = { pkg, apk -> dev.tidytv.app.data.PhoneApps.open(app, pkg, apk) },
                 )
             }
         }

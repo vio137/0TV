@@ -118,9 +118,10 @@ private fun StepScreen(step: Step, s: UiState, vm: WizardViewModel?, onShareLogs
         Step.RESCUE -> RescueScreen(s.rescue, { vm?.stopRescue() }, { s.rescue.tv?.let { vm?.startRescue(it) } }, { vm?.stopRescue() })
         Step.HUB -> HubScreen(
             s.tv, s.done.records.offByUs().count { !dev.tidytv.core.lists.Launchers.isHomeApp(it) }, s.wizard.kind == dev.tidytv.core.flow.TvKind.FIRE_TV,
-            { vm?.openTidy() }, { vm?.openRemote() }, { vm?.openFiles() }, { vm?.openHomeScreen() }, { vm?.openRestore() }, { vm?.back() }, { vm?.openCheck() }, { vm?.openSpace() }, { vm?.openAds() }, { vm?.openApps() }, { vm?.openCobalt() }, s.hubFacts,
+            { vm?.openTidy() }, { vm?.openRemote() }, { vm?.openFiles() }, { vm?.openHomeScreen() }, { vm?.openRestore() }, { vm?.back() }, { vm?.openCheck() }, { vm?.openSpace() }, { vm?.openAds() }, { vm?.openApps() }, { vm?.openCobalt() }, { vm?.openApp2Tv() }, s.hubFacts,
         )
         Step.REMOTE -> RemoteScreen(s.remote, s.tv?.title, { vm?.press(it) }, { vm?.type(it) }, { vm?.launchApp(it) }, { vm?.dismissRemoteMessage() }, { vm?.toHub() }, { vm?.togglePin(it) }, { p, d -> vm?.movePin(p, d) })
+        Step.APP2TV -> dev.tidytv.app.ui.screens.App2TvScreen(s.app2tv, s.tv?.title, { vm?.setApp2TvQuery(it) }, { vm?.pickPhoneApp(it) }, { vm?.closePhoneApp() }, { vm?.sendPhoneApp() }, { vm?.toHub() })
         Step.SEND_FILES -> SendFilesScreen(s.files, s.tv?.title, { vm?.sendFiles(it) }, { vm?.cancelFile(it) }, { vm?.retryFile(it) }, { vm?.toHub() }, { vm?.setSendFolder(it) })
         Step.COBALT -> dev.tidytv.app.ui.screens.CobaltScreen(s.cobalt, s.tv?.title, { vm?.installCobalt() }, { vm?.installCobalt(allowSizeOnly = true) }, { vm?.refreshCobalt() }, { vm?.removeCobalt() }, { actions.openUrl(dev.tidytv.core.ops.Cobalt.RELEASES_PAGE) }, { vm?.toHub() })
         Step.UNSUPPORTED -> UnsupportedScreen { vm?.back() }

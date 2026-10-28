@@ -201,6 +201,18 @@ class ScreenshotTest {
         RemoteApp("com.plexapp.android", "com.plexapp.android/.Main", "Plex"),
         RemoteApp("org.xbmc.kodi", "org.xbmc.kodi/.Main", "Kodi")))))
     @Test fun remoteReconnecting() = shoot("8b_remote_reconnecting", Step.REMOTE, UiState(tv = summary, remote = RemoteState(reconnecting = true)))
+
+    // ---- App2TV ----
+    private val a2tApps = listOf("Spotify" to "com.spotify.music", "VLC" to "org.videolan.vlc", "Kodi" to "org.xbmc.kodi", "Telegram" to "org.telegram.messenger", "Termux" to "com.termux").map { dev.tidytv.app.PhoneAppEntry(it.second, it.first) }
+    private val vlc = dev.tidytv.core.ops.PhoneApp("org.videolan.vlc", "VLC", "3.6.0", 13060000, 21,
+        listOf(dev.tidytv.core.ops.PhoneApk("base.apk", 42_000_000), dev.tidytv.core.ops.PhoneApk("split_config.armeabi_v7a.apk", 18_000_000)), setOf("armeabi-v7a"))
+    private val a2tBase = dev.tidytv.app.App2TvState(apps = a2tApps, loaded = true)
+    @Test fun app2tvList() = shoot("a2_list", Step.APP2TV, UiState(tv = summary, app2tv = a2tBase), 3)
+    @Test fun app2tvOk() = shoot("a2_detail_ok", Step.APP2TV, UiState(tv = summary, app2tv = a2tBase.copy(selected = vlc, verdict = dev.tidytv.core.ops.App2Tv.Verdict.Ok(listOf("Needs about 60 MB free on the TV. It has plenty.")))))
+    @Test fun app2tvBlocked() = shoot("a2_detail_blocked", Step.APP2TV, UiState(tv = summary, app2tv = a2tBase.copy(selected = vlc.copy(label = "Telegram", nativeAbis = setOf("arm64-v8a")), verdict = dev.tidytv.core.ops.App2Tv.Verdict.Blocked("Telegram only has 64-bit files, but this TV runs 32-bit apps. It can't run Telegram, so nothing was sent."))))
+    @Test fun app2tvProgress() = shoot("a2_progress", Step.APP2TV, UiState(tv = summary, app2tv = a2tBase.copy(selected = vlc, verdict = dev.tidytv.core.ops.App2Tv.Verdict.Ok(emptyList()), stage = dev.tidytv.core.ops.App2Tv.Stage.COPYING, part = 2, parts = 2)))
+    @Test fun app2tvDone() = shoot("a2_success", Step.APP2TV, UiState(tv = summary, app2tv = a2tBase.copy(selected = vlc, verdict = dev.tidytv.core.ops.App2Tv.Verdict.Ok(emptyList()), resultText = "Installed. VLC is on the TV and shows in its app list.", resultOk = true)))
+    @Test fun app2tvFailed() = shoot("a2_failure", Step.APP2TV, UiState(tv = summary, app2tv = a2tBase.copy(selected = vlc, verdict = dev.tidytv.core.ops.App2Tv.Verdict.Ok(emptyList()), resultText = "The TV ran out of space while installing VLC. Free up some space on the TV (the Free up space tile can help) and try again.", resultOk = false)))
     @Test fun filesEmpty() = shoot("9_send_files", Step.SEND_FILES, UiState(tv = summary, files = FilesState(freeBytes = 8L * 1024 * 1024 * 1024)))
     @Test fun filesSending() = shoot("9b_send_files_progress", Step.SEND_FILES, UiState(tv = summary, files = FilesState(freeBytes = 8L * 1024 * 1024 * 1024, items = listOf(
         SendItem(1, "Holiday 2026.mp4", 734_003_200, sent = 734_003_200, status = SendStatus.SENT, savedAs = "Holiday 2026.mp4"),

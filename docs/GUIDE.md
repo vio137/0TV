@@ -71,7 +71,24 @@ This is a separate, optional install from the TizenTubeCobalt GitHub releases. T
 
 **Restore does not uninstall or roll back TizenTube/Cobalt.** Manage it separately in the TV's app settings. 0TV is not affiliated with YouTube or the upstream project.
 
-## 9. Restore and recovery
+## 9. App2TV: send an app from your phone to the TV
+
+**Purpose.** Many apps are not in the Android TV app store. If the app is on your phone, App2TV can copy it to your TV and install it there.
+
+**How it works.**
+1. Install the app on your phone first. It has to be on the phone.
+2. Open My TV, then App2TV. Every app on the phone is listed, apps you installed first, then system apps. Search or pick one.
+3. 0TV asks the TV if it can take the app: Android version, 32-bit or 64-bit, free space, and whether the TV already has a newer copy. If not, it says why in plain English and sends nothing.
+4. 0TV reads the app's files from the phone (the main file plus any extra parts), copies them to the TV over the existing connection, and the TV's own installer installs them. Then 0TV checks the app is really on the TV and removes the temporary files.
+5. If the install fails, 0TV reads the TV's answer and explains it, for example "the TV ran out of space" or "the app is built for a newer Android than this TV".
+
+**Limits.** The app keeps its own signature, and 0TV never uninstalls, wipes data, downgrades or bypasses a signature check. System apps are only replaced if the TV allows it, and an app that is part of the TV's own system is refused. Many phone apps need a touch screen and may not work with a remote, even if they install. Apps built only for 64-bit phones cannot run on a 32-bit TV.
+
+## Easter egg
+
+On the TV's 0TV Home screen, press Up, Up, Down, Down, Left, Right, Left, Right on the remote. The screen looks cracked. Press the same sequence again to undo it. It only works in 0TV Home.
+
+## 10. Restore and recovery
 
 Use **Restore a TV** / **Restore Everything** after reconnecting to the same TV. Keep the phone app and backup records. See [RECOVERY.md](RECOVERY.md) for the conditions and limits. Do not rely on the phrase “Everything” as a guarantee of complete reversal.
 

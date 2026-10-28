@@ -7,7 +7,7 @@
 ## 1. Install on your phone
 
 1. Use an Android 8.0+ phone with ARM64 or ARMv7 support.
-2. Download `0TV-1.0.0-rc3-b16.apk` from this repository's releases.
+2. Download `0TV-1.0.0-rc4.apk` from this repository's releases.
 3. Open the file in your browser or Files app. If Android asks, allow **Install unknown apps** for that app. Install 0TV, then turn that permission off again if you do not need it.
 4. To update an existing 0TV install, install over it. Avoid uninstalling first: local recovery history may be lost. An update needs a compatible package identity and signing key.
 

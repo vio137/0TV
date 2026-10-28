@@ -109,9 +109,13 @@ class ScreenshotTest {
     @Test fun appsLoading() = shoot("15b_apps_loading", Step.APPS, UiState(tv = summary, apps = AppsState()))
     @Test fun adsOff() = shoot("14_ads_off", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, dns = dev.tidytv.core.ops.DnsState(null, null))))
     @Test fun adsOn() = shoot("14b_ads_on", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false,
-        dns = dev.tidytv.core.ops.DnsState("hostname", "dns.adguard-dns.com"), message = RestoreUi.Finished("Ad blocking is on. Open an app to see the difference.", ok = true))))
+        dns = dev.tidytv.core.ops.DnsState("hostname", "dns.adguard-dns.com"), message = RestoreUi.Finished("Ad blocking is on. The TV confirms it: dns.adguard-dns.com.", ok = true))))
     @Test fun adsReplaceAsk() = shoot("14c_ads_replace", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false,
         dns = dev.tidytv.core.ops.DnsState("hostname", "dns.quad9.net"), confirmReplace = dev.tidytv.core.ops.AdBlockProvider.ADS)))
+    @Test fun adsAutomatic() = shoot("14e_ads_automatic", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, dns = dev.tidytv.core.ops.DnsState("opportunistic", "dns.adguard-dns.com"))))
+    @Test fun adsCustom() = shoot("14f_ads_custom", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, lastCustom = "dns.example.com", dns = dev.tidytv.core.ops.DnsState("hostname", "dns.example.com"))))
+    @Test fun adsLookupFailed() = shoot("14g_ads_lookup_failed", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, dns = dev.tidytv.core.ops.DnsState("opportunistic", null),
+        message = RestoreUi.Finished("The TV took the setting but couldn't look up names through dead.example.com, so it was put back. Check the server name, and that your network allows DNS-over-TLS (port 853).", ok = false))))
     @Test fun adsOldTv() = shoot("14d_ads_old_tv", Step.ADS, UiState(tv = summary, ads = AdsState(loading = false, supported = false)))
     @Test fun spaceLoading() = shoot("13c_space_loading", Step.SPACE, UiState(tv = summary, space = SpaceState()))
 

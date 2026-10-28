@@ -1,18 +1,22 @@
 # Testing and release scope
 
-## Release candidate 1.0.0-rc3 / b16
+## Release candidate 1.0.0-rc4
 
-- Companion package: `app.tvtidy.cleaner`, versionCode 3, minSdk 26, targetSdk 36.
-- Published APK SHA-256: `452222ef35c9a893cdadb400df652fec32818dc475d74223b207c7707dca0f77`.
-- Size: 24,475,832 bytes.
-- Signing certificate SHA-256: `3b5057c1ad574820ca80269cca1c0e798ae439e71f43729f3b7d54ca90fe9729`.
-- Bundled redesigned launcher SHA-256: `09f2d94ebc3b32e375b71fd9feac1aedde16495d65dd8ea4041e836d0c373386`.
+- Companion package: `app.tvtidy.cleaner`, versionCode 4, minSdk 26, targetSdk 36.
+- Published APK SHA-256: `49588c0c8fafb56d7cdf8b63b6eb17525cc0b6df9b54b2b40a4a0840e2dfec7c`.
+- Size: 24,543,858 bytes.
+- Signing certificate SHA-256: `3b5057c1ad574820ca80269cca1c0e798ae439e71f43729f3b7d54ca90fe9729` (same as earlier releases, so it installs as an update).
+
+### What changed from rc3
+
+- Block ads reads the TV's actual Private DNS mode and server and shows them, separate from a live name-lookup check.
+- "Turn off" returns the TV to Automatic when the saved previous value was itself AdGuard or your own server.
+- You can enter your own DNS-over-TLS server name. If the TV cannot resolve names through it, the setting is rolled back.
+- Preview images for 0TV Home and Projectivy. The Projectivy image is a screenshot from its Google Play listing, credited to Spocky; no reuse licence is claimed.
 
 ### What was exercised
 
-The 0TV Home launcher was exercised on a Xiaomi Mi Box 4, Android 9, ARMv7, 1920×1080. Remote focus, navigation, scrolling and real installed-app banners were checked. Public TV captures come from that session; the network name is masked. The existing default launcher was not silently changed as part of publishing.
-
-Build-time reported test results: companion 133 passed, core 293 passed, ADB 14 passed. Fork snapshot: 245 passed. Lint on the preceding b15 build reported 0 errors and 20 warnings; it was not rerun for the b16 asset-only delta. These are build records, not a claim that every flow was exercised on physical hardware.
+Core tests: 297 passed. Companion unit and rendered-screen tests: 67 passed. The DNS setting behaviour was observed on a Xiaomi Mi Box 4 (Android 9) over ADB. The 0TV Home launcher was exercised on the same TV; public TV captures come from it and the network name is masked.
 
 ### What remains unproven
 

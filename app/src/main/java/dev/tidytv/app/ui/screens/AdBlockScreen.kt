@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,16 +37,20 @@ fun AdBlockScreen(
     s: AdsState,
     tvName: String?,
     onBlock: (AdBlockProvider, Boolean) -> Unit,
+    onCustom: (String, Boolean) -> String?,
+    onRefresh: () -> Unit,
     onUnblock: () -> Unit,
     onCancelReplace: () -> Unit,
     onBack: () -> Unit,
 ) {
-    val on = s.dns?.provider
+    val on = s.dns?.pinned == true
+    var host by androidx.compose.runtime.saveable.rememberSaveable(s.lastCustom, s.dns?.host) { androidx.compose.runtime.mutableStateOf(s.dns?.takeIf { it.custom }?.host ?: s.lastCustom ?: "") }
+    var hostError by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf<String?>(null) }
     ScreenFrame(
         top = { TopBar("My TV", onBack, tvName) },
         bottom = {
             if (!s.loading && s.supported) {
-                if (on != null) BigButton(if (s.busy) "Turning off…" else "Turn off ad blocking", onUnblock, color = Color.White, textColor = Tidy.Ink, enabled = !s.busy)
+                if (on) BigButton(if (s.busy) "Turning off…" else "Turn off ad blocking", onUnblock, color = Color.White, textColor = Tidy.Ink, enabled = !s.busy)
                 else BigButton(if (s.busy) "Turning on…" else "Block ads and trackers", { onBlock(AdBlockProvider.ADS, false) }, color = Tidy.Green, enabled = !s.busy)
             }
         },
@@ -60,18 +66,26 @@ fun AdBlockScreen(
             return@ScreenFrame
         }
         if (s.loading) return@ScreenFrame
-        if (on != null) SafetyBanner("Ad blocking is on (${on.blurb}).")
-        if (s.dns?.someoneElses == true) Note("This TV already uses its own Private DNS (${s.dns.host}). Turning this on replaces it, and turning it off puts it back.")
-        s.confirmReplace?.let { p ->
+        // What the TV reports right now, read straight from its settings.
+        if (s.dns == null) {
+            Note("Couldn't read this TV's DNS setting.", color = Tidy.RedSoft, textColor = Tidy.Red)
+        } else {
+            val d = s.dns
+            if (d.pinned) SafetyBanner(d.headline())
+            else Note(d.headline(), color = Tidy.Grey, textColor = Tidy.Ink)
+            Text("Read from the TV: mode ${d.mode ?: "not set"}${d.host?.let { ", server $it" } ?: ""}", style = MaterialTheme.typography.labelMedium, color = Tidy.Muted)
+        }
+        dev.tidytv.app.ui.TextLink(if (s.busy) "Working…" else "Check the TV again", onRefresh, small = true)
+        if (s.confirmReplace != null || s.confirmReplaceHost != null) {
             Outline {
-                Text("Replace the DNS this TV already uses?", style = MaterialTheme.typography.titleMedium, color = Tidy.Ink)
+                Text("Replace the DNS this TV already uses (${s.dns?.host})? Turning this off puts it back.", style = MaterialTheme.typography.titleMedium, color = Tidy.Ink)
                 Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    BigButton("Replace it", { onBlock(p, true) }, Modifier.weight(1f), color = Tidy.Green)
+                    BigButton("Replace it", { s.confirmReplace?.let { onBlock(it, true) } ?: s.confirmReplaceHost?.let { onCustom(it, true) } }, Modifier.weight(1f), color = Tidy.Green)
                     BigButton("Keep it", onCancelReplace, Modifier.weight(1f), color = Color.White, textColor = Tidy.Ink)
                 }
             }
         }
-        if (on == null) Note(AdBlockInfo.DISCLOSURE)
+        if (!on) Note(AdBlockInfo.DISCLOSURE)
         CardBox(color = Tidy.GreenSoft) {
             Text("What it can block", style = MaterialTheme.typography.titleMedium, color = Tidy.GreenInk)
             Column(Modifier.padding(top = 6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -86,9 +100,23 @@ fun AdBlockScreen(
             Text(AdBlockInfo.YOUTUBE_WARNING, style = MaterialTheme.typography.titleMedium, color = Tidy.AmberInk, modifier = Modifier.padding(top = 10.dp))
         }
         Body(AdBlockInfo.SIDE_EFFECT, color = Tidy.Muted)
-        if (on == null && !s.busy) Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        if (s.dns?.provider != AdBlockProvider.FAMILY && !s.busy) Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text("Also block adult sites?", style = MaterialTheme.typography.bodyMedium, color = Tidy.Muted)
             dev.tidytv.app.ui.TextLink("Use the family version", { onBlock(AdBlockProvider.FAMILY, false) })
+        }
+        CardBox {
+            Text("Use your own DNS-over-TLS server", style = MaterialTheme.typography.titleMedium, color = Tidy.Ink)
+            Body("Type the server name your DNS provider gave you, like dns.example.com. No https:// and no port: Android uses port 853.", color = Tidy.Muted)
+            androidx.compose.material3.OutlinedTextField(
+                host, { host = it; hostError = null }, Modifier.fillMaxWidth().padding(top = 8.dp), singleLine = true,
+                label = { Text("Server name") }, placeholder = { Text("dns.example.com", color = Tidy.Muted) },
+                isError = hostError != null, enabled = !s.busy,
+                supportingText = hostError?.let { e -> @Composable { Text(e, color = Tidy.Red) } },
+                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Uri, imeAction = androidx.compose.ui.text.input.ImeAction.Done),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+            )
+            val updating = s.dns?.custom == true
+            BigButton(if (s.busy) "Working…" else if (updating) "Update my server" else "Use my server", { hostError = onCustom(host, false) }, Modifier.padding(top = 8.dp), enabled = !s.busy && host.isNotBlank())
         }
     }
 }

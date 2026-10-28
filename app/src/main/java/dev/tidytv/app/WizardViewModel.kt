@@ -149,6 +149,10 @@ data class AdsState(
     val busy: Boolean = false,
     /** Another Private DNS is set; this is the provider the person picked, waiting for "Replace it". */
     val confirmReplace: dev.tidytv.core.ops.AdBlockProvider? = null,
+    /** Same, for the owner's own server name waiting for "Replace it". */
+    val confirmReplaceHost: String? = null,
+    /** The owner's own DNS-over-TLS server this app set before, to pre-fill the field. */
+    val lastCustom: String? = null,
     val message: RestoreUi.Finished? = null,
 )
 
@@ -1313,46 +1317,77 @@ class WizardViewModel(
         _ui.update { it.copy(ads = AdsState()) }
         viewModelScope.launch {
             val lg = log
-            val dns = if (lg == null) null else withShell { s -> dev.tidytv.core.ops.PrivateDns(s, lg).read() }
+            var last: String? = null
+            val dns = if (lg == null) null else withShell { s -> dev.tidytv.core.ops.PrivateDns(s, lg).also { last = it.lastCustomHost() }.read() }
             trace.line("ads: read $dns")
-            _ui.update { it.copy(ads = AdsState(loading = false, dns = dns,
+            _ui.update { it.copy(ads = AdsState(loading = false, dns = dns, lastCustom = last,
                 message = if (dns == null) RestoreUi.Finished("The TV stopped answering. Check it's on, then try again.", ok = false) else null)) }
         }
     }
 
-    /** Turns on ad blocking. If someone else's Private DNS is set, the first tap only asks (see [AdsState.confirmReplace]). */
+    /** Reads the TV's Private DNS again, so the screen shows what the TV is doing now. */
+    fun refreshAds() { if (!_ui.value.ads.busy) enterAds() }
+
+    /** Turns on ad blocking. If a different server is already set, the first tap only asks (see [AdsState.confirmReplace]). */
     fun blockAds(provider: dev.tidytv.core.ops.AdBlockProvider, confirmed: Boolean = false) {
         val a = _ui.value.ads
         if (a.busy) return
-        if (a.dns?.someoneElses == true && !confirmed) {
-            _ui.update { it.copy(ads = it.ads.copy(confirmReplace = provider)) }
+        if (a.dns?.pinned == true && a.dns.provider != provider && !confirmed && !weSetIt(a.dns)) {
+            _ui.update { it.copy(ads = it.ads.copy(confirmReplace = provider, confirmReplaceHost = null)) }
             return
         }
-        changeAds { dns -> dns.turnOn(provider) to provider }
+        changeAds { dns -> dns.turnOn(provider) to provider.host }
     }
 
-    fun cancelReplaceDns() = _ui.update { it.copy(ads = it.ads.copy(confirmReplace = null)) }
+    /** Uses the owner's own DNS-over-TLS server. Returns the reason when the name is refused, null when it went ahead. */
+    fun useCustomDns(input: String, confirmed: Boolean = false): String? {
+        val a = _ui.value.ads
+        if (a.busy) return null
+        val host = when (val r = dev.tidytv.core.ops.DotHost.check(input)) {
+            is dev.tidytv.core.ops.DotHost.Result.Bad -> return r.reason
+            is dev.tidytv.core.ops.DotHost.Result.Ok -> r.host
+        }
+        if (a.dns?.pinned == true && !a.dns.host.equals(host, true) && !confirmed && !weSetIt(a.dns)) {
+            _ui.update { it.copy(ads = it.ads.copy(confirmReplaceHost = host, confirmReplace = null)) }
+            return null
+        }
+        changeAds { dns -> dns.useCustom(host) to host }
+        return null
+    }
+
+    /** True when this app set the server now in use, so changing it needs no "replace" question. */
+    private fun weSetIt(dns: dev.tidytv.core.ops.DnsState): Boolean {
+        val lg = log ?: return false
+        return dev.tidytv.core.ops.PrivateDns.hostsSetIn(lg.records()).any { it.equals(dns.host, true) }
+    }
+
+    fun cancelReplaceDns() = _ui.update { it.copy(ads = it.ads.copy(confirmReplace = null, confirmReplaceHost = null)) }
 
     fun unblockAds() = changeAds { dns -> dns.turnOff() to null }
 
-    private fun changeAds(block: suspend (dev.tidytv.core.ops.PrivateDns) -> Pair<dev.tidytv.core.ops.DnsState, dev.tidytv.core.ops.AdBlockProvider?>) {
+    private fun changeAds(block: suspend (dev.tidytv.core.ops.PrivateDns) -> Pair<dev.tidytv.core.ops.DnsState, String?>) {
         val lg = log ?: return
-        _ui.update { it.copy(ads = it.ads.copy(busy = true, confirmReplace = null, message = null)) }
+        _ui.update { it.copy(ads = it.ads.copy(busy = true, confirmReplace = null, confirmReplaceHost = null, message = null)) }
         viewModelScope.launch {
             var wrongTv = false
+            var lookupFailed = false
             val r = withShell { s ->
-                try { block(dev.tidytv.core.ops.PrivateDns(s, lg)) } catch (e: dev.tidytv.core.ops.WrongTvException) { wrongTv = true; null }
+                val pd = dev.tidytv.core.ops.PrivateDns(s, lg)
+                try { block(pd).also { lookupFailed = pd.lookupFailed } } catch (e: dev.tidytv.core.ops.WrongTvException) { wrongTv = true; null }
             }
             trace.line("ads: $r")
             val (state, wanted) = r ?: (null to null)
             val msg = when {
                 wrongTv -> RestoreUi.Finished("This record belongs to a different TV, or this TV can't be identified, so nothing was changed.", ok = false)
                 state == null -> RestoreUi.Finished("The TV stopped answering. Check it's on, then try again.", ok = false)
-                wanted != null && state.provider != wanted -> RestoreUi.Finished("This TV didn't accept the change, so it was left as it was.", ok = false)
-                wanted != null -> RestoreUi.Finished("Ad blocking is on. Open an app to see the difference.", ok = true)
-                else -> RestoreUi.Finished("Ad blocking is off. Your TV's DNS is back as it was.", ok = true)
+                wanted != null && lookupFailed -> RestoreUi.Finished("The TV took the setting but couldn't look up names through $wanted, so it was put back. Check the server name, and that your network allows DNS-over-TLS (port 853).", ok = false)
+                wanted != null && !(state.mode == "hostname" && state.host.equals(wanted, true)) -> RestoreUi.Finished("This TV didn't accept the change, so it was left as it was.", ok = false)
+                wanted != null && state.provider != null -> RestoreUi.Finished("Ad blocking is on. The TV confirms it: ${state.host}.", ok = true)
+                wanted != null -> RestoreUi.Finished("Your DNS-over-TLS server is set. The TV confirms it: ${state.host}.", ok = true)
+                state.pinned -> RestoreUi.Finished("Your TV's DNS is back as it was before: ${state.host}.", ok = true)
+                else -> RestoreUi.Finished("Ad blocking is off. The TV now reports: ${state.headline()}", ok = true)
             }
-            _ui.update { it.copy(ads = it.ads.copy(busy = false, dns = state ?: it.ads.dns, message = msg)) }
+            _ui.update { it.copy(ads = it.ads.copy(busy = false, dns = state ?: it.ads.dns, lastCustom = if (wanted != null && state?.custom == true) wanted else it.ads.lastCustom, message = msg)) }
         }
     }
 

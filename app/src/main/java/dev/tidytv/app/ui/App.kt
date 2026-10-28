@@ -134,7 +134,7 @@ private fun StepScreen(step: Step, s: UiState, vm: WizardViewModel?, onShareLogs
             { vm?.retryBackup() }, { vm?.toDone() }, { vm?.showMoreApps() }, { vm?.openAllApps() }, { vm?.setUninstall(it) },
         )
         Step.APPS -> AppsScreen(s.apps, s.labels, s.tv?.title, { vm?.openApp(it) }, { vm?.closeApp() }, { vm?.changeApp(it, false) }, { vm?.changeApp(it, true) }, { vm?.toHub() })
-        Step.ADS -> AdBlockScreen(s.ads, s.tv?.title, { p, ok -> vm?.blockAds(p, ok) }, { vm?.unblockAds() }, { vm?.cancelReplaceDns() }, { vm?.toHub() })
+        Step.ADS -> AdBlockScreen(s.ads, s.tv?.title, { p, ok -> vm?.blockAds(p, ok) }, { h, ok -> vm?.useCustomDns(h, ok) }, { vm?.refreshAds() }, { vm?.unblockAds() }, { vm?.cancelReplaceDns() }, { vm?.toHub() })
         Step.SPACE -> SpaceScreen(s.space, s.tv?.title, s.labels, { vm?.clearCaches() }, { vm?.toHub() })
         Step.TIDYING -> TidyingScreen(s.tidy, { vm?.toDone(); vm?.restoreEverything() }, { vm?.toDone() }, onShareLogs)
         Step.HOME_SCREEN -> HomeScreenStep(

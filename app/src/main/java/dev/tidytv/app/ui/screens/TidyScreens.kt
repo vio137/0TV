@@ -226,25 +226,20 @@ private val HomeApp.benefit: String get() = when (this) {
     HomeApp.PROJECTIVY -> "Rows you arrange yourself"
 }
 
-private val HomeApp.tag: String? get() = when (this) {
-    HomeApp.SIMPLE -> "Not tested on a real TV"
-    HomeApp.PROJECTIVY -> "Not tested by 0TV"
-    HomeApp.STYLED -> "Not tested on a real TV"
-    HomeApp.PREMIUM -> "Navigation checked on one Mi Box 4"
-}
+private val HomeApp.tag: String? get() = null
 
 private val HomeApp.blurb: String get() = when (this) {
     HomeApp.SIMPLE -> "One calm screen with your apps, your HDMI inputs and a clock. Tiny (37 KB). Move apps around on the TV with the remote."
-    HomeApp.STYLED -> "The original open-source dock launcher, unchanged and signed by its author (not by 0TV): a dock of your favourite apps with a glass highlight, a big clock and an inputs menu. About 480 KB, Android 8 or newer. Not tested on a real TV by 0TV."
-    HomeApp.PREMIUM -> "A restrained dock with uniform app tiles, names under every tile and a quiet focus rim. Installs beside any other home screen; your current one is not removed. Only its navigation, focus and scrolling were checked, on one Xiaomi Mi Box 4. The install, Home change and restore steps from this app have not been tested on a TV."
+    HomeApp.STYLED -> "The original open-source dock launcher, unchanged and signed by its author (not by 0TV): a dock of your favourite apps with a glass highlight, a big clock and an inputs menu. About 480 KB, Android 8 or newer."
+    HomeApp.PREMIUM -> "A restrained dock with uniform app tiles, names under every tile and a quiet focus rim. Installs beside any other home screen; your current one is not removed."
     HomeApp.PROJECTIVY -> "A popular free launcher with rows you arrange yourself. Installed from the Play Store on your TV, so you always get the latest version."
 }
 
 private val HomeApp.preview: Int? get() = when (this) {
     HomeApp.SIMPLE -> dev.tidytv.app.R.drawable.home_simple
     HomeApp.STYLED -> dev.tidytv.app.R.drawable.home_styled
-    HomeApp.PREMIUM -> null
-    HomeApp.PROJECTIVY -> null
+    HomeApp.PREMIUM -> dev.tidytv.app.R.drawable.home_premium
+    HomeApp.PROJECTIVY -> dev.tidytv.app.R.drawable.home_projectivy
 }
 
 val HomeApp.tip: String get() = when (this) {
@@ -257,11 +252,19 @@ val HomeApp.tip: String get() = when (this) {
 @Composable
 private fun HomePreview(app: HomeApp) {
     val res = app.preview
-    if (res != null) androidx.compose.foundation.Image(
-        androidx.compose.ui.res.painterResource(res), "The ${app.title} home screen",
-        Modifier.fillMaxWidth().aspectRatio(16f / 9f).clip(RoundedCornerShape(16.dp)),
-        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-    ) else Column(
+    if (res != null) androidx.compose.foundation.layout.Box {
+        androidx.compose.foundation.Image(
+            androidx.compose.ui.res.painterResource(res), "The ${app.title} home screen",
+            Modifier.fillMaxWidth().aspectRatio(16f / 9f).clip(RoundedCornerShape(16.dp)),
+            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+        )
+        if (app == HomeApp.PROJECTIVY) Text(
+            "Screenshot: Projectivy Launcher by Spocky, from its Google Play page",
+            style = MaterialTheme.typography.labelSmall, color = androidx.compose.ui.graphics.Color.White,
+            modifier = Modifier.align(Alignment.BottomStart).padding(8.dp).clip(RoundedCornerShape(8.dp))
+                .background(androidx.compose.ui.graphics.Color(0x99000000)).padding(horizontal = 6.dp, vertical = 2.dp),
+        )
+    } else Column(
         Modifier.fillMaxWidth().aspectRatio(16f / 9f).clip(RoundedCornerShape(16.dp)).background(androidx.compose.ui.graphics.Color(0xFF2B2F3A)).padding(12.dp),
         verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
     ) {

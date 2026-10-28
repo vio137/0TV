@@ -8,11 +8,11 @@
 A calmer Android TV starts on your phone.<br>
 Review preloaded apps, keep a backup, and make room for a Home you actually want.
 
-<a href="https://github.com/vio137/0TV/releases/latest/download/0TV-1.0.0-rc3-b16.apk"><img src="https://img.shields.io/badge/DOWNLOAD_0TV_APK-Android_8%2B-bcff69?style=for-the-badge&labelColor=14212c&color=bcff69" alt="DOWNLOAD 0TV APK - Android 8+"></a>
+<a href="https://github.com/vio137/0TV/releases/latest/download/0TV-1.0.0-rc4.apk"><img src="https://img.shields.io/badge/DOWNLOAD_0TV_APK-Android_8%2B-bcff69?style=for-the-badge&labelColor=14212c&color=bcff69" alt="DOWNLOAD 0TV APK - Android 8+"></a>
 
 **[Visit the project website ↗](https://vio137.github.io/0TV/)** · **[Install guide](docs/GUIDE.md)** · **[Latest release](https://github.com/vio137/0TV/releases/latest)**
 
-`1.0.0-rc3 / b16` · `Android phone companion` · `Free & open source`
+`1.0.0-rc4` · `Android phone companion` · `Free & open source`
 
 <img src="website/assets/tv-home.png" width="100%" alt="Real 0TV Home capture on Xiaomi Mi Box 4 showing Netflix focus and installed app banners">
 
@@ -51,9 +51,9 @@ Normal cleanup disables selected packages. Separate removal tools have stronger 
 - **Restore is not a universal undo.** It depends on recorded backups, device checks and prior state. Permanently deleted app data cannot be recovered.
 - Uninstalling the phone app can remove its local history. Keep the app and records when updating.
 - Restore does **not** roll back a TizenTube/Cobalt install.
-- Optional Block ads uses AdGuard Private DNS on compatible Android 9+ TVs. DNS lookups then go to a third party. It does not block YouTube in-video ads.
+- Optional Block ads uses AdGuard Private DNS (or a DNS-over-TLS server you enter) on compatible Android 9+ TVs. The app reads the TV's actual setting and checks that names resolve. DNS lookups then go to a third party. It does not block YouTube in-video ads.
 - TV firmware, network isolation and debugging support affect compatibility. Never expose ADB to the public internet or disable its approval checks.
-- This is a release candidate. Physical-phone haptics and the complete cleanup/restore workflow are not all hardware-proven. [Exact test scope](docs/TESTING.md).
+- This is a release candidate. See the [test scope](docs/TESTING.md).
 
 ## Compatibility
 
@@ -73,13 +73,13 @@ The website has no analytics or third-party scripts. [Privacy and network detail
 
 | Item | Value |
 |---|---|
-| Version | 1.0.0-rc3 / versionCode 3 / b16 |
+| Version | 1.0.0-rc4 / versionCode 4 |
 | Package | `app.tvtidy.cleaner` |
-| APK size | 24,475,832 bytes |
-| SHA-256 | `452222ef35c9a893cdadb400df652fec32818dc475d74223b207c7707dca0f77` |
+| APK size | 24,543,858 bytes |
+| SHA-256 | `49588c0c8fafb56d7cdf8b63b6eb17525cc0b6df9b54b2b40a4a0840e2dfec7c` |
 
 ```sh
-sha256sum 0TV-1.0.0-rc3-b16.apk
+sha256sum 0TV-1.0.0-rc4.apk
 ```
 
 Download from [this repository's releases](https://github.com/vio137/0TV/releases/latest), not a third-party reupload. Keep an existing installation's recovery history when updating.

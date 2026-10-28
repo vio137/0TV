@@ -1,8 +1,6 @@
 package dev.tidytv.app.data
 
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import dev.tidytv.app.PhoneAppEntry
 import dev.tidytv.core.ops.App2Tv
 import dev.tidytv.core.ops.PhoneApk
@@ -16,14 +14,13 @@ import java.util.zip.ZipFile
  * files (base plus splits) of one chosen app. Nothing is copied here. Files are streamed on send.
  */
 object PhoneApps {
+    /** Every app installed on this phone (not only ones with a launcher icon), apps you installed first. */
     fun list(ctx: Context): List<PhoneAppEntry> {
         val pm = ctx.packageManager
-        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-        return pm.queryIntentActivities(intent, 0)
-            .map { it.activityInfo.packageName to it.loadLabel(pm).toString() }
-            .filter { it.first != ctx.packageName }
-            .distinctBy { it.first }
-            .map { PhoneAppEntry(it.first, it.second) }
+        return pm.getInstalledApplications(0)
+            .filter { it.packageName != ctx.packageName && it.sourceDir != null }
+            .map { PhoneAppEntry(it.packageName, it.loadLabel(pm).toString(), (it.flags and android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0) }
+            .distinctBy { it.pkg }
     }
 
     private fun files(ctx: Context, pkg: String): Pair<android.content.pm.ApplicationInfo, List<File>>? {

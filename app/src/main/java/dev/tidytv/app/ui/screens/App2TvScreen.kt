@@ -84,7 +84,7 @@ private fun AppPicker(s: App2TvState, onQuery: (String) -> Unit, onPick: (String
         Body("2. Pick it from the list below. The TV is asked if it can run it.", color = Tidy.Ink)
         Body("3. 0TV copies the app's files to the TV over your existing connection and the TV installs it. You are told plainly if it fails and why.", color = Tidy.Ink)
     }
-    Note("Phone apps often aren't made for a remote control, and some are built only for 64-bit phones. App2TV checks this before it sends anything.")
+    Note("Every app on this phone is listed, those you installed first, then system apps. System apps may not be sendable, and the TV is asked before anything is copied. Phone apps often aren't made for a remote control, and some are built only for 64-bit phones. App2TV checks this before it sends anything.")
     androidx.compose.material3.OutlinedTextField(
         s.query, onQuery, Modifier.fillMaxWidth(), singleLine = true, label = { Text("Search your phone's apps") },
         shape = RoundedCornerShape(16.dp),
@@ -92,20 +92,20 @@ private fun AppPicker(s: App2TvState, onQuery: (String) -> Unit, onPick: (String
     when {
         !s.loaded -> Row(verticalAlignment = Alignment.CenterVertically) { Spinner(); Spacer(Modifier.width(10.dp)); Body("Reading your phone's apps…") }
         s.shown.isEmpty() -> Body(if (s.apps.isEmpty()) "No apps found on this phone." else "No app matches that search.")
-        else -> s.shown.forEach { a -> AppRow(a.pkg, a.label) { onPick(a.pkg) } }
+        else -> s.shown.forEach { a -> AppRow(a.pkg, a.label, a.system) { onPick(a.pkg) } }
     }
     if (s.resultText != null) Note(s.resultText, color = Tidy.RedSoft, textColor = Tidy.Red)
 }
 
 @Composable
-private fun AppRow(pkg: String, label: String, onClick: () -> Unit) {
+private fun AppRow(pkg: String, label: String, system: Boolean, onClick: () -> Unit) {
     Outline(Modifier.clickable(onClick = onClick)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AppIcon(pkg, label)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(label, style = MaterialTheme.typography.titleMedium, color = Tidy.Ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(pkg, style = MaterialTheme.typography.labelSmall, color = Tidy.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(if (system) "$pkg · System app" else pkg, style = MaterialTheme.typography.labelSmall, color = Tidy.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }

@@ -291,7 +291,7 @@ data class FilesState(
 }
 
 /** One app on the phone that App2TV can offer. */
-data class PhoneAppEntry(val pkg: String, val label: String)
+data class PhoneAppEntry(val pkg: String, val label: String, val system: Boolean = false)
 
 /** App2TV: pick an app on the phone, see whether the TV can take it, send it, read the result. */
 data class App2TvState(
@@ -925,7 +925,7 @@ class WizardViewModel(
         _ui.update { it.copy(app2tv = App2TvState()) }
         viewModelScope.launch {
             val list = withContext(imageWork) { runCatching { phoneApps() }.getOrDefault(emptyList()) }
-            _ui.update { it.copy(app2tv = it.app2tv.copy(apps = list.sortedBy { a -> a.label.lowercase() }, loaded = true)) }
+            _ui.update { it.copy(app2tv = it.app2tv.copy(apps = list.sortedWith(compareBy({ a -> a.system }, { a -> a.label.lowercase() })), loaded = true)) }
         }
     }
 

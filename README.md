@@ -8,11 +8,11 @@
 A calmer Android TV starts on your phone.<br>
 Review preloaded apps, keep a backup, and make room for a Home you actually want.
 
-<a href="https://github.com/vio137/0TV/releases/latest/download/0TV-1.0.0-rc4.apk"><img src="https://img.shields.io/badge/DOWNLOAD_0TV_APK-Android_8%2B-bcff69?style=for-the-badge&labelColor=14212c&color=bcff69" alt="DOWNLOAD 0TV APK - Android 8+"></a>
+<a href="https://github.com/vio137/0TV/releases/latest/download/0TV-1.0.0-rc5.apk"><img src="https://img.shields.io/badge/DOWNLOAD_0TV_APK-Android_8%2B-bcff69?style=for-the-badge&labelColor=14212c&color=bcff69" alt="DOWNLOAD 0TV APK - Android 8+"></a>
 
 **[Visit the project website ↗](https://vio137.github.io/0TV/)** · **[Install guide](docs/GUIDE.md)** · **[Latest release](https://github.com/vio137/0TV/releases/latest)**
 
-`1.0.0-rc4` · `Android phone companion` · `Free & open source`
+`1.0.0-rc5` · `Android phone companion` · `Free & open source`
 
 <img src="website/assets/tv-home.png" width="100%" alt="Real 0TV Home capture on Xiaomi Mi Box 4 showing Netflix focus and installed app banners">
 
@@ -77,13 +77,13 @@ The website has no analytics or third-party scripts. [Privacy and network detail
 
 | Item | Value |
 |---|---|
-| Version | 1.0.0-rc4 / versionCode 4 |
+| Version | 1.0.0-rc5 / versionCode 5 |
 | Package | `app.tvtidy.cleaner` |
-| APK size | 24,543,858 bytes |
-| SHA-256 | `11ec7586bae60d2710e8cb3c9d18fb384e1ddcfdfa31242712fcb7fde2e7d724` |
+| APK size | 24,577,670 bytes |
+| SHA-256 | `606b7b4b5e88c91f9b94ab91e2f75ea5f608ccff6b444ce47fef66c00a07e901` |
 
 ```sh
-sha256sum 0TV-1.0.0-rc4.apk
+sha256sum 0TV-1.0.0-rc5.apk
 ```
 
 Download from [this repository's releases](https://github.com/vio137/0TV/releases/latest), not a third-party reupload. Keep an existing installation's recovery history when updating.

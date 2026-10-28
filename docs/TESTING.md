@@ -1,3 +1,16 @@
+# rc8 verification
+
+- Version 1.0.0-rc8 / versionCode 8, app.tvtidy.cleaner, min Android 8, target SDK 36.
+- Original signing certificate SHA-256: 3b5057c1ad574820ca80269cca1c0e798ae439e71f43729f3b7d54ca90fe9729.
+- APK: 24,626,870 bytes; SHA-256: 9a2c296d26a1d0f45bb80d7656325f1997556bd379adc490614ff0a2f2c8acdc.
+- Core 324, ADB 14, app 158 tests pass (496 total, zero failures/errors).
+- New J10TV section installs the JioTV Go app (com.skylake.skytv.jgorunner, MIT) from its own GitHub releases: latest stable release only (drafts/pre-releases refused), SHA-256 checked against GitHub's published digest before any TV transfer, package id and pinned signing certificate (f5753de28893ae190a230ed0d158ce976340908e25ea9c1e803d28abc08cf41b) verified from the downloaded APK, ABI/Android/storage preflight, per-TV install record, and Remove allowed only for a copy 0TV itself installed. J10TV tests cover release picking, checksum verification, identity refusal, weak-check consent, space/SDK refusal, transfer mismatch, ownership and serial rules.
+- Tap on the TV picture in My TV takes a fresh screenshot and updates that device's cache; ordinary hub visits still reuse the cached still (force-refresh covered by test).
+- Rendered J10TV screens inspected (ready, weak-check, installed; 360dp and tall): layout, wording and notes verified; hub shows the new tile. Fixture images, not a physical TV.
+- Physical-TV J10TV install and preview capture flows are covered by logic and rendered tests only, not verified on a physical TV. No TV settings, launcher or DNS changed.
+
+## Previous release verification
+
 # rc7 verification
 
 - Version 1.0.0-rc7 / versionCode 7, app.tvtidy.cleaner, min Android 8, target SDK 36.

@@ -49,7 +49,9 @@ class Store(private val root: File) {
 
     /** Optional TizenTube Cobalt: its own record, so Restore Everything never touches it, and a download folder. */
     fun cobaltLog(serial: String): ActionLog = FileActionLog(File(tvDir(serial), "cobalt.jsonl"))
+    fun j10Log(serial: String): ActionLog = FileActionLog(File(tvDir(serial), "j10tv.jsonl"))
     val cobaltDir: File get() = File(root, "cobalt").apply { mkdirs() }
+    val j10Dir: File get() = File(root, "j10tv").apply { mkdirs() }
 
     fun saveBackup(backup: Backup): File {
         val f = File(tvDir(backup.serial), "backup-${backup.takenAt}.json")

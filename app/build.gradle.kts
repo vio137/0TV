@@ -15,8 +15,8 @@ android {
         applicationId = "app.tvtidy.cleaner"
         minSdk = 26
         targetSdk = 36
-        versionCode = 7
-        versionName = "1.0.0-rc7"
+        versionCode = 8
+        versionName = "1.0.0-rc8"
     }
 
     // Release signing comes from keys/signing.properties, a git-ignored folder in the repo.

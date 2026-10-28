@@ -311,6 +311,19 @@ data class App2TvState(
     val shown get() = if (query.isBlank()) apps else apps.filter { it.label.contains(query.trim(), true) || it.pkg.contains(query.trim(), true) }
 }
 
+/** The optional J10TV install, step by step. Every state is something that actually happened. */
+sealed interface J10Ui {
+    data object Idle : J10Ui
+    data class Checking(val what: String) : J10Ui
+    data class Ready(val tag: String, val sizeBytes: Long, val abiNote: String, val alreadyInstalled: String?, val removableNow: Boolean = false) : J10Ui
+    data class Downloading(val done: Long, val total: Long) : J10Ui
+    data class Sending(val done: Long, val total: Long) : J10Ui
+    data class Installed(val pkg: String, val tag: String, val launched: Boolean, val integrity: String, val removable: Boolean, val updatedExisting: Boolean) : J10Ui
+    /** Nothing installed yet: this TV has no checksum tool, so the only check left is size. Needs the owner's yes. */
+    data object WeakCheck : J10Ui
+    data class Failed(val message: String, val retry: Boolean = true) : J10Ui
+}
+
 /** The optional TizenTube Cobalt install, step by step. Every state is something that actually happened. */
 sealed interface CobaltUi {
     data object Idle : CobaltUi
@@ -326,6 +339,7 @@ sealed interface CobaltUi {
 
 data class UiState(
     val cobalt: CobaltUi = CobaltUi.Idle,
+    val j10: J10Ui = J10Ui.Idle,
     val wizard: Wizard = Wizard(),
     val connect: ConnectState = ConnectState.Scanning(),
     val tv: TvSummary? = null,
@@ -430,6 +444,7 @@ class WizardViewModel(
             Step.REMOTE -> enterRemote()
             Step.SEND_FILES -> enterFiles()
             Step.COBALT -> enterCobalt()
+            Step.J10TV -> enterJ10Tv()
             Step.APP2TV -> enterApp2Tv()
             Step.CHECK -> recheck()
             Step.SPACE -> enterSpace()
@@ -469,6 +484,7 @@ class WizardViewModel(
     fun openFiles() = wizard(WizardEvent.OpenFiles)
     fun openApp2Tv() = wizard(WizardEvent.OpenApp2Tv)
     fun openCobalt() = wizard(WizardEvent.OpenCobalt)
+    fun openJ10Tv() = wizard(WizardEvent.OpenJ10Tv)
     fun openHomeScreen() = wizard(WizardEvent.OpenHomeScreen)
     fun openRestore() = wizard(WizardEvent.OpenRestore)
     fun toHub() = wizard(WizardEvent.ToHub)
@@ -650,15 +666,16 @@ class WizardViewModel(
 
     // ---------- My TV hub ----------
 
-    /** Reuse the first successful still. Only uncached devices need a capture. */
-    fun refreshTvPreview() {
-        if (previewJob?.isActive == true || _ui.value.tvPreview.image != null) return
+    /** Reuse the first successful still. Only uncached devices need a capture. [force] (tap on the picture) always takes a fresh still and updates the cache. */
+    fun refreshTvPreview(force: Boolean = false) {
+        if (previewJob?.isActive == true) return
+        if (!force && _ui.value.tvPreview.image != null) return
         val selected = _ui.value.tv ?: return
         val activeShell = shell ?: return
         val session = previewSession
-        _ui.update { it.copy(tvPreview = TvPreview(loading = true)) }
+        _ui.update { it.copy(tvPreview = it.tvPreview.copy(loading = true)) }
         previewJob = viewModelScope.launch {
-            val cached = withContext(imageWork) { previewCache.read(selected) }
+            val cached = if (force) null else withContext(imageWork) { previewCache.read(selected) }
             val image = cached ?: try {
                 val bytes = withTimeoutOrNull(12_000) {
                     tvLock.withLock { dev.tidytv.core.ops.ScreenCapture.read(activeShell) }
@@ -669,9 +686,9 @@ class WizardViewModel(
                 null
             }
             if (session == previewSession && shell === activeShell && _ui.value.tv == selected) {
-                if (cached == null && image != null) withContext(imageWork) { previewCache.save(selected, image) }
+                if (image != null && (cached == null || force)) withContext(imageWork) { previewCache.save(selected, image) }
                 if (session == previewSession && shell === activeShell && _ui.value.tv == selected)
-                    _ui.update { it.copy(tvPreview = TvPreview(image)) }
+                    _ui.update { it.copy(tvPreview = TvPreview(image ?: it.tvPreview.image)) }
             }
         }
     }
@@ -1223,6 +1240,114 @@ class WizardViewModel(
                 dev.tidytv.core.ops.Cobalt.Removal.FAILED -> CobaltUi.Failed("Couldn't remove it. You can uninstall it on the TV under Settings > Apps.")
             }) }
             if (r == dev.tidytv.core.ops.Cobalt.Removal.REMOVED) enterCobalt()
+        }
+    }
+
+    // ---------- Optional J10TV ----------
+
+    private var j10Plan: dev.tidytv.core.ops.J10Tv.Plan? = null
+    private var j10Job: kotlinx.coroutines.Job? = null
+
+    /** Looks at the TV and at the project's latest release. Changes nothing. */
+    fun refreshJ10Tv() = enterJ10Tv()
+
+    private fun enterJ10Tv() {
+        if (_ui.value.j10 is J10Ui.Downloading || _ui.value.j10 is J10Ui.Sending) return
+        j10Job?.cancel()
+        j10Job = viewModelScope.launch {
+            _ui.update { it.copy(j10 = J10Ui.Checking("Checking your TV and the latest release")) }
+            val s = shell ?: return@launch
+            val pre = try { tvLock.withLock { dev.tidytv.core.ops.J10Tv.preflight(s) } } catch (e: TvConnectionLost) {
+                _ui.update { it.copy(j10 = J10Ui.Failed("The TV stopped answering. Check it is on, then try again.")) }; return@launch
+            }
+            val body = withContext(kotlinx.coroutines.Dispatchers.IO) {
+                runCatching { http(dev.tidytv.core.ops.J10Tv.RELEASE_API).run { if (responseCode == 200) inputStream.bufferedReader().readText() else null } }.getOrNull()
+            }
+            val rel = body?.let(dev.tidytv.core.ops.J10Tv::parseRelease)
+            if (rel == null) { _ui.update { it.copy(j10 = J10Ui.Failed("Couldn't read the J10TV releases from GitHub. Check the phone's internet and try again.")) }; return@launch }
+            when (val p = dev.tidytv.core.ops.J10Tv.pick(rel, pre.abis)) {
+                is dev.tidytv.core.ops.J10Tv.Pick.UnsupportedAbi -> _ui.update { it.copy(j10 = J10Ui.Failed("This TV reports ${p.abis.joinToString().ifEmpty { "no known processor type" }}. J10TV only ships ARM builds, so it can't run here.", retry = false)) }
+                is dev.tidytv.core.ops.J10Tv.Pick.Unverifiable -> _ui.update { it.copy(j10 = J10Ui.Failed("Won't install: ${p.why}. Nothing was changed.", retry = true)) }
+                is dev.tidytv.core.ops.J10Tv.Pick.Ok -> {
+                    j10Plan = p.plan
+                    val log = _ui.value.tv?.serial?.let { sn -> store.j10Log(sn) }
+                    val there = runCatching { tvLock.withLock { dev.tidytv.core.ops.Parse.packages(s.run(dev.tidytv.core.ops.Commands.isInstalled(dev.tidytv.core.ops.J10Tv.PACKAGE))).contains(dev.tidytv.core.ops.J10Tv.PACKAGE) } }.getOrDefault(false)
+                    val rm = there && log != null && dev.tidytv.core.ops.J10Tv.removable(log, _ui.value.tv?.serial ?: "")
+                    val note = if (!there) null else if (rm) "Installed earlier by 0TV" else "Already on this TV (not installed by 0TV, so 0TV will update it but never remove it)"
+                    _ui.update { it.copy(j10 = J10Ui.Ready(p.plan.tag, p.plan.size, if (pre.abis.any { a -> a == "arm64-v8a" }) "One build for this 64-bit ARM TV" else "One build for this 32-bit ARM TV", note, rm)) }
+                }
+            }
+        }
+    }
+
+    /** Downloads from the project's own release page, verifies size and SHA-256, then installs as its own app. */
+    fun installJ10Tv(allowSizeOnly: Boolean = false) {
+        val plan = j10Plan ?: return
+        if (j10Job?.isActive == true && (_ui.value.j10 is J10Ui.Downloading || _ui.value.j10 is J10Ui.Sending)) return
+        val serial = _ui.value.tv?.serial ?: return
+        j10Job = viewModelScope.launch {
+            val file = java.io.File(store.j10Dir, plan.assetName)
+            try {
+                val ok = withContext(kotlinx.coroutines.Dispatchers.IO) {
+                    if (file.length() != plan.size || !dev.tidytv.core.ops.J10Tv.verify(plan) { file.inputStream() }) {
+                        file.delete()
+                        val c = http(plan.url); c.instanceFollowRedirects = true
+                        if (c.responseCode != 200) return@withContext false
+                        var done = 0L
+                        file.outputStream().use { out -> c.inputStream.use { ins ->
+                            val buf = ByteArray(64 * 1024)
+                            while (true) {
+                                val n = ins.read(buf); if (n < 0) break
+                                out.write(buf, 0, n); done += n
+                                if (done % (1 shl 20) < buf.size) _ui.update { it.copy(j10 = J10Ui.Downloading(done, plan.size)) }
+                            }
+                        } }
+                        dev.tidytv.core.ops.J10Tv.verify(plan) { file.inputStream() }
+                    } else true
+                }
+                if (!ok) { file.delete(); _ui.update { it.copy(j10 = J10Ui.Failed("The download didn't match the checksum GitHub publishes for it, so it was thrown away and nothing was sent to the TV.")) }; return@launch }
+                _ui.update { it.copy(j10 = J10Ui.Sending(0, plan.size)) }
+                val s = shell ?: (if (reconnect()) shell else null) ?: run { _ui.update { it.copy(j10 = J10Ui.Failed("The TV isn't connected.")) }; return@launch }
+                val log = store.j10Log(serial)
+                val identity = apkIdentity?.invoke(file)?.let { dev.tidytv.core.ops.J10Tv.ApkIdentity(it.pkg, it.versionName, it.signerSha256) }
+                if (identity == null) { file.delete(); _ui.update { it.copy(j10 = J10Ui.Failed("Couldn't read the app's identity from the downloaded file, so it was not installed.")) }; return@launch }
+                val progress = object : TvShell by s {
+                    override suspend fun pushStream(source: java.io.InputStream, size: Long, remotePath: String, onProgress: (Long) -> Unit) =
+                        s.pushStream(source, size, remotePath) { n -> _ui.update { it.copy(j10 = J10Ui.Sending(n, size)) }; onProgress(n) }
+                }
+                val out = tvLock.withLock { dev.tidytv.core.ops.J10Tv.install(progress, plan, identity, { file.inputStream() }, log, serial, allowSizeOnly) }
+                trace.line("j10tv install: ${out::class.simpleName}")
+                _ui.update { it.copy(j10 = when (out) {
+                    is dev.tidytv.core.ops.J10Tv.Outcome.Installed -> J10Ui.Installed(out.pkg, plan.tag, out.launched, out.integrity.text, out.fresh, !out.fresh)
+                    is dev.tidytv.core.ops.J10Tv.Outcome.IdentityMismatch -> J10Ui.Failed("Won't install: the downloaded file is not the J10TV app (${out.detail}). Nothing was sent to the TV.", retry = false)
+                    is dev.tidytv.core.ops.J10Tv.Outcome.NeedsWeakCheckConsent -> J10Ui.WeakCheck
+                    is dev.tidytv.core.ops.J10Tv.Outcome.NoSpace -> J10Ui.Failed("Not enough space on the TV (${out.freeMb ?: "?"} MB free). Free up space first.")
+                    is dev.tidytv.core.ops.J10Tv.Outcome.TransferMismatch -> J10Ui.Failed("The file didn't arrive intact (${out.detail}). Nothing was installed.")
+                    is dev.tidytv.core.ops.J10Tv.Outcome.Refused -> J10Ui.Failed(out.reason + if (out.needsTvApproval) " Then tap Install again." else "")
+                    dev.tidytv.core.ops.J10Tv.Outcome.Unconfirmed -> J10Ui.Failed("Android said it installed, but 0TV couldn't confirm which app it is, so it isn't claiming success.")
+                    dev.tidytv.core.ops.J10Tv.Outcome.Disconnected -> J10Ui.Failed("The TV stopped answering. Check what is on the TV before trying again.")
+                } ) }
+            } catch (e: kotlinx.coroutines.CancellationException) { throw e
+            } catch (e: Exception) {
+                trace.line("j10tv failed: $e")
+                _ui.update { it.copy(j10 = J10Ui.Failed("Something went wrong: ${e.message ?: e::class.simpleName}")) }
+            }
+        }
+    }
+
+    /** Removes J10TV, only if this feature installed it. Nothing else on the TV is touched. */
+    fun removeJ10Tv() {
+        val st = _ui.value.j10 as? J10Ui.Installed ?: return
+        val serial = _ui.value.tv?.serial ?: return
+        viewModelScope.launch {
+            val s = shell ?: return@launch
+            val r = runCatching { tvLock.withLock { dev.tidytv.core.ops.J10Tv.uninstall(s, store.j10Log(serial), serial) } }.getOrDefault(dev.tidytv.core.ops.J10Tv.Removal.FAILED)
+            _ui.update { it.copy(j10 = when (r) {
+                dev.tidytv.core.ops.J10Tv.Removal.REMOVED -> J10Ui.Idle
+                dev.tidytv.core.ops.J10Tv.Removal.NOT_OURS -> J10Ui.Failed("0TV only removes a copy it installed onto a TV that had none. Remove this one on the TV under Settings > Apps.", retry = false)
+                dev.tidytv.core.ops.J10Tv.Removal.FAILED -> J10Ui.Failed("Couldn't remove it. You can uninstall it on the TV under Settings > Apps.")
+            }) }
+            if (r == dev.tidytv.core.ops.J10Tv.Removal.REMOVED) enterJ10Tv()
         }
     }
 

@@ -18,6 +18,7 @@ file lists what ships and what it obliges.
 | cleanyourtv, tv-detox, TidyTV | see NOTICE | MIT |
 | Simple Icons | see NOTICE | CC0-1.0 |
 | Nunito font | see NOTICE | SIL OFL 1.1 |
+| JioTV Go app (JTV-GO Server), downloaded on request, never bundled | not bundled | MIT |
 
 ## spake2-java 1.1.1
 The release tag 1.1.1 is commit 809ad7aa731f475c07763b1ad2c165ae192dfb5f.

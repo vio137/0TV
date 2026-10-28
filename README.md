@@ -33,7 +33,7 @@ Review preloaded apps, keep a backup, and make room for a Home you actually want
 
 **Easter egg.** On 0TV Home, press Up, Up, Down, Down, Left, Right, Left, Right on the remote for a cracked-screen look. Press it again to undo.
 
-Normal cleanup disables selected packages. Separate removal tools have stronger recovery limits. Optional DNS filtering and optional TizenTube Cobalt installation are separate choices, not hidden cleanup steps.
+Normal cleanup disables selected packages. Separate removal tools have stronger recovery limits. Optional DNS filtering and optional TizenTube Cobalt / J10TV installation are separate choices, not hidden cleanup steps.
 
 ## Get started
 
@@ -54,7 +54,7 @@ Normal cleanup disables selected packages. Separate removal tools have stronger 
 
 - **Restore is not a universal undo.** It depends on recorded backups, device checks and prior state. Permanently deleted app data cannot be recovered.
 - Uninstalling the phone app can remove its local history. Keep the app and records when updating.
-- Restore does **not** roll back a TizenTube/Cobalt install.
+- Restore does **not** roll back a TizenTube/Cobalt or J10TV install.
 - Optional Block ads uses AdGuard Private DNS (or a DNS-over-TLS server you enter) on compatible Android 9+ TVs. The app reads the TV's actual setting and checks that names resolve. DNS lookups then go to a third party. It does not block YouTube in-video ads.
 - TV firmware, network isolation and debugging support affect compatibility. Never expose ADB to the public internet or disable its approval checks.
 - This is a release candidate. See the [test scope](docs/TESTING.md).
@@ -69,7 +69,7 @@ Normal cleanup disables selected packages. Separate removal tools have stronger 
 
 ## Privacy
 
-No account, analytics, automatic update check or automatic feedback upload in this build. The main connection is local ADB. Optional Cobalt download contacts GitHub. Optional DNS filtering uses AdGuard. Feedback opens Android's share sheet; you choose what to send and where.
+No account, analytics, automatic update check or automatic feedback upload in this build. The main connection is local ADB. Optional Cobalt and J10TV downloads contact GitHub. Optional DNS filtering uses AdGuard. Feedback opens Android's share sheet; you choose what to send and where.
 
 The website has no analytics or third-party scripts. [Privacy and network details](docs/PRIVACY.md).
 

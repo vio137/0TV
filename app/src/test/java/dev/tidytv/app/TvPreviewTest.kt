@@ -100,6 +100,11 @@ class TvPreviewTest {
             assertNotNull(restarted.ui.value.tvPreview.image); assertEquals(1,captures)
             val other = vm(b); other.refreshTvPreview(); testScheduler.advanceUntilIdle()
             assertNotNull(other.ui.value.tvPreview.image); assertEquals(2,captures)
+            // A tap on the picture forces a fresh capture and updates the cache, even with one already shown.
+            other.refreshTvPreview(force = true); testScheduler.advanceUntilIdle()
+            assertEquals(3,captures)
+            val again = vm(b); again.refreshTvPreview(); testScheduler.advanceUntilIdle()
+            assertEquals(3,captures)
         } finally { kotlinx.coroutines.Dispatchers.resetMain() }
     }
     private fun shoot(name:String,preview:TvPreview,width:Int=360) {

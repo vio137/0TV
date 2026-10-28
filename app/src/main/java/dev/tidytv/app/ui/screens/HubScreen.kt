@@ -38,6 +38,7 @@ import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.PlayCircle
+import androidx.compose.material.icons.rounded.LiveTv
 import androidx.compose.material.icons.rounded.Memory
 import androidx.compose.material.icons.rounded.Restore
 import androidx.compose.material.icons.rounded.Shield
@@ -77,8 +78,10 @@ fun HubScreen(
     onApps: () -> Unit = {},
     onCobalt: () -> Unit = {},
     onApp2Tv: () -> Unit = {},
+    onJ10Tv: () -> Unit = {},
     facts: dev.tidytv.app.HubFacts = dev.tidytv.app.HubFacts(),
     preview: dev.tidytv.app.TvPreview = dev.tidytv.app.TvPreview(),
+    onPreviewTap: (() -> Unit)? = null,
 ) {
     val items = buildList {
         add(HubItem(Icons.Rounded.CleaningServices, "Tidy up", Tidy.Blue, Color.White, if (appsOff > 0) (if (appsOff == 1) "1 app switched off so far" else "$appsOff apps switched off so far") else null, onTidy))
@@ -86,6 +89,7 @@ fun HubScreen(
         add(HubItem(Icons.Rounded.Upload, "Send files", Tidy.Orange, Color.White, onClick = onFiles))
         if (!fireTv) add(HubItem(Icons.Rounded.Home, "Home screen", Tidy.Green, Color.White, onClick = onHomeScreen))
         if (!fireTv) add(HubItem(Icons.Rounded.PlayCircle, "YouTube+", Tidy.Orange, Color.White, onClick = onCobalt))
+        if (!fireTv) add(HubItem(Icons.Rounded.LiveTv, "J10TV", Tidy.Green, Color.White, onClick = onJ10Tv))
         add(HubItem(Icons.Rounded.PhoneAndroid, "App2TV", Tidy.Purple, Color.White, onClick = onApp2Tv))
         add(HubItem(Icons.Rounded.Apps, "Apps", Tidy.Blue, Color.White, onClick = onApps))
         add(HubItem(Icons.Rounded.TaskAlt, "Check my TV", Tidy.Yellow, Tidy.Ink, onClick = onCheck))
@@ -96,7 +100,7 @@ fun HubScreen(
     val featured = items.first()
     val rest = items.drop(1)
     ScreenFrame(top = { Row(Modifier.fillMaxWidth()) { TextLink("Change TV", onBack, icon = Icons.AutoMirrored.Rounded.ArrowBack) } }) {
-        if (tv != null) TvCard(tv.title, tv.model, preview = preview)
+        if (tv != null) TvCard(tv.title, tv.model, preview = preview, onPreviewTap = onPreviewTap)
         if (facts.any) dev.tidytv.app.ui.ChipRow(center = false) {
             facts.freeStorageMb?.let { dev.tidytv.app.ui.InfoChip(Icons.Rounded.Storage, "${gbOrMb(it)} free", color = Tidy.BlueSoft, textColor = Tidy.Ink) }
             facts.freeRamMb?.let { dev.tidytv.app.ui.InfoChip(Icons.Rounded.Memory, "${gbOrMb(it)} RAM free", color = Tidy.GreenSoft, textColor = Tidy.GreenInk) }

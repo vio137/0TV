@@ -193,7 +193,7 @@ fun TvPicture(width: androidx.compose.ui.unit.Dp = 92.dp) {
 
 /** Card for one TV in the scan list and on My TVs. */
 @Composable
-fun TvCard(title: String, subtitle: String, onClick: (() -> Unit)? = null, trailing: (@Composable () -> Unit)? = null, preview: dev.tidytv.app.TvPreview = dev.tidytv.app.TvPreview()) {
+fun TvCard(title: String, subtitle: String, onClick: (() -> Unit)? = null, trailing: (@Composable () -> Unit)? = null, preview: dev.tidytv.app.TvPreview = dev.tidytv.app.TvPreview(), onPreviewTap: (() -> Unit)? = null) {
     val src = androidx.compose.runtime.remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
     Row(
         Modifier.fillMaxWidth().pressScale(src, onClick != null).clip(RoundedCornerShape(16.dp)).background(Tidy.Card)
@@ -202,7 +202,7 @@ fun TvCard(title: String, subtitle: String, onClick: (() -> Unit)? = null, trail
             .heightIn(min = 72.dp).padding(14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TvPreviewFrame(title, preview)
+        TvPreviewFrame(title, preview, onPreviewTap)
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.titleLarge, color = Tidy.Ink)
@@ -228,10 +228,12 @@ fun Outline(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -
 
 /** A quiet TV bezel is shared by the waiting symbol and the saved screen. */
 @Composable
-fun TvPreviewFrame(title: String, preview: dev.tidytv.app.TvPreview) {
+fun TvPreviewFrame(title: String, preview: dev.tidytv.app.TvPreview, onTap: (() -> Unit)? = null) {
     Column(Modifier.width(112.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Box(Modifier.size(112.dp, 67.dp).clip(RoundedCornerShape(7.dp)).background(Color(0xFF283345))
-            .border(1.dp, Color(0xFF536077), RoundedCornerShape(7.dp)).padding(4.dp)) {
+            .border(1.dp, Color(0xFF536077), RoundedCornerShape(7.dp))
+            .then(if (onTap != null) Modifier.clickable(role = Role.Button, onClickLabel = "Take a fresh screenshot of $title", onClick = onTap) else Modifier)
+            .padding(4.dp)) {
             val screen = Modifier.fillMaxSize().clip(RoundedCornerShape(3.dp)).background(Color(0xFF101C2E))
             val image = preview.image
             if (image != null) androidx.compose.foundation.Image(image.asImageBitmap(), "Saved screen from $title", screen,

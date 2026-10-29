@@ -131,7 +131,7 @@ JDK 21 and Android SDK platform 37 are needed for the companion. The launcher fo
 ## Author & credits
 
 **0TV design and customizations: ARNAB MANDAL**<br>
-[arnabmandal.com](https://arnabmandal.com) · [arnab@ik.me](mailto:arnab@ik.me) · [GitHub / vio137](https://github.com/vio137)
+arnabmandal.com · [arnab@ik.me](mailto:arnab@ik.me) · [GitHub / vio137](https://github.com/vio137)
 
 Built on [TidyTV](https://github.com/jolan94/tidytv), [cleanyourtv](https://github.com/Gathin23/cleanyourtv) by Gathin, and [tv-detox](https://github.com/Ansub/tv-detox) by Ansub. Their MIT notices remain. Kadb is Apache-2.0; spake2-java is GPL-3.0. The combined APK is conveyed under **GPL-3.0**; individual components keep their own licences.
 

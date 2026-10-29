@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Setup and troubleshooting
+    url: https://github.com/vio137/0TV/blob/main/docs/GUIDE.md
+    about: Connection, install and feature instructions
+  - name: Recovery limits
+    url: https://github.com/vio137/0TV/blob/main/docs/RECOVERY.md
+    about: Read before uninstalling the phone app or repeating a failed TV change

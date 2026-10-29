@@ -1,0 +1,27 @@
+name: Report a bug
+description: A download, connection or app problem
+body:
+  - type: markdown
+    attributes:
+      value: Do not share network addresses, pairing codes, account details or unredacted logs/screenshots. Never expose ADB to the internet.
+  - type: input
+    id: version
+    attributes:
+      label: 0TV version
+      placeholder: e.g. 1.0.0-rc8
+    validations:
+      required: true
+  - type: input
+    id: devices
+    attributes:
+      label: Phone and TV model / Android versions
+      description: For a website or download issue, give your browser instead.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include steps, expected result and actual result. For a broken download, paste the public link that failed.
+    validations:
+      required: true

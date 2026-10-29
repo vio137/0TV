@@ -1,96 +1,112 @@
 <div align="center">
-<img src="website/assets/icon.png" width="88" alt="0TV">
+<img src="website/assets/icon.png" width="72" alt="0TV icon">
 
 # 0TV
 
-### Less noise. More television.
+**Less noise. More television.**
 
-A calmer Android TV starts on your phone.<br>
-Review preloaded apps, keep a backup, and make room for a Home you actually want.
+Debloat your Android TV from your Android phone.<br>
+No laptop. No desktop. No Claude Code required.
 
-<a href="https://github.com/vio137/0TV/releases/download/v1.0.0-rc8/0TV-1.0.0-rc8.apk"><img src="https://img.shields.io/badge/DOWNLOAD_0TV_APK-Android_8%2B-bcff69?style=for-the-badge&labelColor=14212c&color=bcff69" alt="DOWNLOAD 0TV APK - Android 8+"></a>
+<a href="https://github.com/vio137/0TV/releases/download/v1.0.0-rc8/0TV-1.0.0-rc8.apk"><img src="website/assets/download-apk.svg" width="280" alt="Download 0TV APK for Android 8 or newer"></a>
 
-**[Visit the project website ↗](https://vio137.github.io/0TV/)** · **[Install guide](docs/GUIDE.md)** · **[Latest release](https://github.com/vio137/0TV/releases/latest)**
+**[Download APK](https://github.com/vio137/0TV/releases/download/v1.0.0-rc8/0TV-1.0.0-rc8.apk)** · **[Website](https://vio137.github.io/0TV/)** · **[Setup guide](docs/GUIDE.md)**
 
-`1.0.0-rc8` · `Android phone companion` · `Free & open source`
+`1.0.0-rc8` · `Android 8+ phone` · `Free & open source`
 
-<img src="website/assets/tv-home.png" width="100%" alt="Real 0TV Home capture on Xiaomi Mi Box 4 showing Netflix focus and installed app banners">
+Install on your **phone**, not on your TV. The app installs the TV launcher for you.
+
+<img src="website/assets/tv-home.png" width="100%" alt="0TV Home on a Xiaomi Mi Box 4, with Netflix focused and installed-app banners">
 
 <sub>Real Xiaomi Mi Box 4 capture. Network name masked. Installed apps vary.</sub>
 </div>
 
----
+## Start here
 
-## Your screen. Your rules.
+1. **Install on your phone.** Download the APK above. Open it and allow installation from your browser or Files app if Android asks.
+2. **Prepare your TV.** Keep both devices on the same home network. Enable Developer options and USB debugging or Wireless debugging where available. The TV must support network ADB.
+3. **Connect and approve.** Open 0TV, choose your TV or enter its current address, and approve the prompt with the TV remote. Wireless debugging uses a fresh pairing code and pairing port, then a connection port.
+4. **Review before changing anything.** Let the backup finish. Keep the apps you use, then confirm your choices. Choose **0TV Home** if you want the launcher shown above.
 
-| Review & tidy | A new Home | Everyday tools |
-|---|---|---|
-| Connect over your home network. Review selected apps before normal cleanup disables them. Backup first, with protected-package guards. | Choose **0TV Home** in the phone app for the redesigned launcher. Large app banners, visible remote focus and a calm layout. | Phone remote, supported text input, app launching, file sending and checks for apps that came back after an update. |
+**Updating? Install over your existing 0TV app. Do not uninstall first:** that can erase local recovery history. No separate TV launcher download is needed.
 
-**One phone APK.** The companion handles installation of the chosen bundled launcher on the TV. Do not install the phone APK as though it were a standalone TV launcher.
+[Step-by-step setup](docs/GUIDE.md) · [Connection help](docs/GUIDE.md#troubleshooting) · [Recovery guide](docs/RECOVERY.md)
 
-**App2TV.** Many apps are missing from the TV's app store. Install the app on your phone, open App2TV in My TV, pick it from the list, and 0TV copies it to the TV and installs it over the existing connection. It checks the TV first and explains any failure in plain English. See the guide for how it works and its limits.
+## What you can do
 
-**Easter egg.** On 0TV Home, press Up, Up, Down, Down, Left, Right, Left, Right on the remote for a cracked-screen look. Press it again to undo.
+1. **Debloat with a backup first.** Review preinstalled apps and disable selected ones. Protected system apps are guarded. Separate removal tools have stronger recovery limits.
+2. **Choose a cleaner Home.** Install 0TV Home with large banners and remote-friendly focus, or choose one of the other launcher options.
+3. **Use your phone as a remote.** Navigate, enter supported text and launch installed TV apps.
+4. **Send files and check storage.** Transfer files, review storage/cache tools and check for apps an update turned back on.
+5. **App2TV.** Copy apps installed on your phone, including split APKs, to your TV. Compatibility and space checks run first; phone apps may still need a touchscreen.
+6. **Optional YouTube+ / TizenTube Cobalt and J10TV installers.** Download from their upstream GitHub releases with digest, package and signing-certificate checks. These are separate choices, not part of cleanup.
+7. **Optional DNS filtering.** Use AdGuard or a custom DNS-over-TLS hostname on compatible Android 9+ TVs. This does **not** block YouTube in-video ads and may affect connectivity.
+8. **See your TV's screen.** My TV keeps a private, per-device screenshot. Tap the TV picture for a fresh capture. It is a saved still, not a live stream.
 
-Normal cleanup disables selected packages. Separate removal tools have stronger recovery limits. Optional DNS filtering and optional TizenTube Cobalt / J10TV installation are separate choices, not hidden cleanup steps.
+<details>
+<summary><b>One extra: the 0TV Home easter egg</b></summary>
 
-## Get started
+Press Up, Up, Down, Down, Left, Right, Left, Right on the TV remote for a cracked-screen effect. Repeat to remove it. This is inside 0TV Home only; it needs no overlay permission. Remote-key behavior has been tested in rendered tests, not on a physical remote.
 
-1. **Install on your phone.** Download the APK above on an Android 8.0+ ARM phone. Open it and allow installation from your browser/Files app if Android asks.
-2. **Prepare the TV.** Use the same home network. Enable the TV's Developer options and USB/Wireless debugging as available.
-3. **Connect and approve.** Choose the TV in 0TV or enter its current address. Approve the prompt with the TV remote. Wireless debugging uses a fresh pairing code and port.
-4. **Review.** Let the backup complete. Check what you want to keep before confirming changes.
-5. **Choose 0TV Home.** Select that exact choice for the redesigned screen. Simple and the original Dock-style choice are different launchers.
-6. **Keep recovery records.** Do not uninstall the phone app casually. Read the restore limits before making changes.
+</details>
 
-[Full illustrated website guide](https://vio137.github.io/0TV/#guide) · [Detailed written guide](docs/GUIDE.md) · [Recovery and troubleshooting](docs/RECOVERY.md)
+## A closer look
 
-## See it in use
+<img src="website/assets/phone-welcome.png" width="260" alt="Rendered phone welcome screen with Connect your TV and backup-first message">
 
-<table><tr><td width="30%" align="center"><img src="website/assets/phone-welcome.png" width="230" alt="Rendered 0TV phone welcome UI"><br><sub>Phone UI render, not a hardware capture.</sub></td><td width="70%"><img src="website/assets/tv-library.png" alt="Real Mi Box 4 capture of scrolled 0TV Home app library"><br><sub>Real TV capture. Network name masked.</sub><br><br>0TV Home was tested on a Xiaomi Mi Box 4 running Android 9 for remote focus, navigation, scrolling and actual installed-app banners. The full phone-side cleanup/restore flow has not been proven end to end on hardware.</td></tr></table>
+*Phone UI render, not a hardware capture.*
 
-## Read this before changing your TV
+<img src="website/assets/tv-library.png" width="100%" alt="Real Mi Box 4 capture of 0TV Home's installed-app library with Zee 5 focused">
 
-- **Restore is not a universal undo.** It depends on recorded backups, device checks and prior state. Permanently deleted app data cannot be recovered.
-- Uninstalling the phone app can remove its local history. Keep the app and records when updating.
-- Restore does **not** roll back a TizenTube/Cobalt or J10TV install.
-- Optional Block ads uses AdGuard Private DNS (or a DNS-over-TLS server you enter) on compatible Android 9+ TVs. The app reads the TV's actual setting and checks that names resolve. DNS lookups then go to a third party. It does not block YouTube in-video ads.
-- TV firmware, network isolation and debugging support affect compatibility. Never expose ADB to the public internet or disable its approval checks.
-- This is a release candidate. See the [test scope](docs/TESTING.md).
+*Real TV capture. Network name masked.*
 
-## Compatibility
+[Explore the website and illustrated guide](https://vio137.github.io/0TV/#guide)
 
-- **Phone:** Android 8.0+ (API 26), ARM64 / ARMv7 release APK.
-- **Primary TV targets:** Android TV and Google TV with accessible ADB debugging over the home network.
-- **Fire TV:** limited cleanup/remote path; replacement of Amazon's Home is not promised.
-- **Samsung Tizen / LG webOS:** not supported Android TV targets.
-- Per-model lists do not guarantee the behavior of every firmware or device.
+## Know the limits
 
-## Privacy
+- **Backup is not a universal undo.** Restore depends on intact records, the same device and prior state. Permanently deleted app data cannot be recovered. Restore does not roll back TizenTube/Cobalt or J10TV installs.
+- **TV support varies.** Android TV and Google TV need accessible network ADB. Fire TV has a limited cleanup/remote path, not a promise to replace Amazon's Home. Samsung Tizen and LG webOS are not supported.
+- **Keep ADB local.** Never expose it to the public internet or disable connection approval. Keep your physical remote and a recovery route.
+- **This is a release candidate.** The launcher has real Mi Box 4 testing. Full phone cleanup/restore, App2TV, J10TV installation and the new tap-to-refresh flow have not been verified end to end on physical hardware. [Exact test scope](docs/TESTING.md).
 
-No account, analytics, automatic update check or automatic feedback upload in this build. The main connection is local ADB. Optional Cobalt and J10TV downloads contact GitHub. Optional DNS filtering uses AdGuard. Feedback opens Android's share sheet; you choose what to send and where.
+## Download & verify
 
-The website has no analytics or third-party scripts. [Privacy and network details](docs/PRIVACY.md).
+If the button does not start a download, use the **[plain APK link](https://github.com/vio137/0TV/releases/download/v1.0.0-rc8/0TV-1.0.0-rc8.apk)** or open **[all releases](https://github.com/vio137/0TV/releases)** and select the APK under Assets.
 
-## Verify the download
+- **Version:** 1.0.0-rc8 / versionCode 8
+- **Package:** `app.tvtidy.cleaner`
+- **Phone:** Android 8.0+ (API 26), ARM64 / ARMv7
+- **Size:** 24,626,870 bytes
 
-| Item | Value |
-|---|---|
-| Version | 1.0.0-rc8 / versionCode 8 |
-| Package | `app.tvtidy.cleaner` |
-| APK size | 24,626,870 bytes |
-| SHA-256 | `9a2c296d26a1d0f45bb80d7656325f1997556bd379adc490614ff0a2f2c8acdc` |
+SHA-256:
+```text
+9a2c296d26a1d0f45bb80d7656325f1997556bd379adc490614ff0a2f2c8acdc
+```
 
+On a computer, if you want to verify the file:
 ```sh
 sha256sum 0TV-1.0.0-rc8.apk
 ```
 
-Download from [this repository's releases](https://github.com/vio137/0TV/releases/latest), not a third-party reupload. Keep an existing installation's recovery history when updating.
+The app itself does not need a computer. Use this repository's release assets, not a third-party reupload. Local builds use a different signing key unless the original signing identity is supplied.
 
-## For builders
+## Privacy
 
-[Building from source](docs/BUILDING.md) covers dependencies, pinned inputs, both launcher builds and signing limits.
+No account, analytics, automatic update check or automatic feedback upload in this build. The main connection is local ADB. Optional Cobalt and J10TV downloads contact GitHub; optional DNS filtering sends DNS queries to the chosen provider. Feedback uses Android's share sheet, so you choose what to share.
+
+The website has no analytics or third-party scripts. [Privacy and network details](docs/PRIVACY.md).
+
+## Guides & source
+
+- [Install and use 0TV](docs/GUIDE.md)
+- [Restore and recovery](docs/RECOVERY.md)
+- [Testing and hardware limits](docs/TESTING.md)
+- [Build from source](docs/BUILDING.md)
+- [Release maintenance](docs/RELEASING.md)
+- [Report a problem](https://github.com/vio137/0TV/issues/new/choose)
+
+<details>
+<summary><b>For developers: build commands and source map</b></summary>
 
 ```sh
 git clone https://github.com/vio137/0TV.git
@@ -100,31 +116,25 @@ sh tools/bootstrap-inputs.sh
 ./gradlew :app:assembleDebug
 ```
 
-JDK 21 and Android SDK platform 37 are needed for the companion. The launcher fork has its own Gradle project. Signing keys are not included. Locally signed builds cannot update the published APK in place unless the signing identity matches.
+JDK 21 and Android SDK platform 37 are needed for the companion. The launcher fork has its own Gradle project. Signing keys are not included. See [BUILDING.md](docs/BUILDING.md) before building or replacing bundled inputs.
 
 | Folder | Contents |
 |---|---|
 | `app`, `core`, `adb` | Companion UI, domain logic, transport and tests |
 | `launcher-fork/launcher` | Redesigned 0TV Home source |
-| `upstream/tv-detox` | Recovered Simple 1.5.7 source snapshot, upstream commit unknown |
-| `website` | Responsive static website, motion, guides and real screenshots |
+| `upstream/tv-detox` | Recovered Simple 1.5.7 source snapshot; upstream commit unknown |
+| `website` | Static website, guides and screenshots |
 | `docs` | Setup, privacy, recovery, test scope and build instructions |
 
-## Author and credits
+</details>
+
+## Author & credits
 
 **0TV design and customizations: ARNAB MANDAL**<br>
-[arnabmandal.com](https://arnabmandal.com) · [arnab@ik.me](mailto:arnab@ik.me) · [github.com/vio137](https://github.com/vio137)
+[arnabmandal.com](https://arnabmandal.com) · [arnab@ik.me](mailto:arnab@ik.me) · [GitHub / vio137](https://github.com/vio137)
 
-Built on [TidyTV](https://github.com/jolan94/tidytv), [cleanyourtv](https://github.com/Gathin23/cleanyourtv) by Gathin, and [tv-detox](https://github.com/Ansub/tv-detox) by Ansub. Their MIT copyright notices remain. Kadb is Apache-2.0; spake2-java is GPL-3.0. The combined APK is conveyed under **GPL-3.0**, and individual components retain their own licences.
+Built on [TidyTV](https://github.com/jolan94/tidytv), [cleanyourtv](https://github.com/Gathin23/cleanyourtv) by Gathin, and [tv-detox](https://github.com/Ansub/tv-detox) by Ansub. Their MIT notices remain. Kadb is Apache-2.0; spake2-java is GPL-3.0. The combined APK is conveyed under **GPL-3.0**; individual components keep their own licences.
 
 [NOTICE](NOTICE) · [Third-party licences](docs/THIRD_PARTY_LICENSES.md) · [GPL-3.0](LICENSE) · [Inherited TidyTV MIT licence](docs/LICENSE-TIDYTV-MIT.txt)
 
-Not affiliated with Google, Amazon, Netflix, YouTube or TV manufacturers. App logos shown on the TV identify installed apps; trademarks belong to their owners.
-
-## Feedback
-
-[Open an issue](https://github.com/vio137/0TV/issues) with the model, Android version, app version and steps to reproduce. Inspect and redact logs and screenshots before posting anything public.
-
-### Selected-TV screen preview (rc7)
-
-My TV uses a TV frame around its preview. An animated Android symbol appears until the first successful ADB screenshot; that still is then saved privately on the phone for the selected device and reused on later visits and app restarts. No timestamp or Refresh button is shown. The cache is not a live view, is excluded from backup and logs, and is never uploaded automatically. Failed, invalid or all-black captures keep the placeholder. Protected content may not appear. Physical-TV capture remains unverified.
+Not affiliated with Google, Amazon, Netflix, YouTube or TV manufacturers. Shown app logos identify installed apps; trademarks belong to their owners. Inspect and redact logs and screenshots before posting them publicly.

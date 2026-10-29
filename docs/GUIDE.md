@@ -7,7 +7,7 @@
 ## 1. Install on your phone
 
 1. Use an Android 8.0+ phone with ARM64 or ARMv7 support.
-2. Download `0TV-1.0.0-rc4.apk` from this repository's releases.
+2. Download the APK linked in the [README](../README.md#download--verify) from this repository's releases.
 3. Open the file in your browser or Files app. If Android asks, allow **Install unknown apps** for that app. Install 0TV, then turn that permission off again if you do not need it.
 4. To update an existing 0TV install, install over it. Avoid uninstalling first: local recovery history may be lost. An update needs a compatible package identity and signing key.
 
@@ -111,4 +111,10 @@ Use **Restore a TV** / **Restore Everything** after reconnecting to the same TV.
 
 ## Selected-TV screen preview
 
-Open My TV after connecting. An animated Android symbol is shown inside a TV frame until the first usable ADB screenshot arrives. That screenshot replaces the symbol and is saved privately on the phone for that device. Later visits and app restarts reuse it without a fresh capture. It is a saved still, not a live view; there is no timestamp or Refresh button. Failed, invalid or all-black frames leave the placeholder. Protected video may be missing. Switching TV cannot show the other device's capture. The cache is excluded from Android backup and logs and is never uploaded automatically. Temporary TV capture files are removed after reading, best effort if the connection drops. Android's Remove animations setting keeps the placeholder static. Physical-TV capture is not yet verified.
+Open My TV after connecting. An animated Android symbol is shown inside a TV frame until the first usable ADB screenshot arrives. That screenshot replaces the symbol and is saved privately on the phone for that device. Later visits and app restarts reuse it. **Tap the TV picture to take a fresh screenshot** over the active ADB connection and update that device's cache. It is a saved still, not a live view; there is no timestamp or Refresh button. Failed, invalid or all-black frames leave the placeholder. Protected video may be missing. Switching TV cannot show the other device's capture. The cache is excluded from Android backup and logs and is never uploaded automatically. Temporary TV capture files are removed after reading, best effort if the connection drops. Android's Remove animations setting keeps the placeholder static. The new tap-to-refresh flow has automated coverage but has not yet been verified on a physical TV.
+
+## Optional J10TV installer
+
+Open **My TV > J10TV** to install the open-source JioTV Go app from its upstream GitHub releases. Only the latest stable release is offered. 0TV checks processor support, Android version and free space, then verifies the published SHA-256, package id and pinned signing certificate before sending it.
+
+Sign in with your own Jio account inside the installed app; 0TV handles no Jio credentials. A per-TV install record allows removal through this tool only for a copy installed by 0TV. Restore does not roll this install back. Physical-TV installation has not yet been verified.

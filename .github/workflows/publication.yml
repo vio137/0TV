@@ -1,0 +1,26 @@
+name: Check public downloads and docs
+on:
+  push:
+    branches: [main]
+    paths: ['README.md', 'release.json', 'docs/**', 'website/**', 'tools/check-publication.py', '.github/workflows/publication.yml']
+  pull_request:
+    paths: ['README.md', 'release.json', 'docs/**', 'website/**', 'tools/check-publication.py', '.github/workflows/publication.yml']
+  release:
+    types: [published, edited]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  publication:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'release' && github.event.repository.default_branch || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check links, release metadata and complete APK digest
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python tools/check-publication.py --online

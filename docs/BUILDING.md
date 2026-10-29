@@ -60,4 +60,4 @@ Serve `website/` with any static HTTP server. No dependency install or build is 
 
 ## Scope of this publication
 
-The public rc4 APK is the already-built release, not rebuilt as part of website publication. Source code, input pins and instructions are supplied for reuse. A bit-for-bit signed rebuild is not promised. Hardware testing limits are documented in [TESTING.md](TESTING.md).
+The public APK is the already-built release linked in the README, not rebuilt as part of documentation or website publication. Source code, input pins and instructions are supplied for reuse. A bit-for-bit signed rebuild is not promised. Hardware testing limits are documented in [TESTING.md](TESTING.md).

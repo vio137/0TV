@@ -64,12 +64,19 @@
   const screens = $$(".pscreen");
   const dots = $$(".story-dots i");
   let activeStep = -1;
+  const pwrap = $(".phone-screens");
   const setStep = (i) => {
     if (i === activeStep) return;
     activeStep = i;
     screens.forEach((img, k) => img.classList.toggle("is-active", k === i));
     dots.forEach((d, k) => d.classList.toggle("on", k === i));
     steps.forEach((s, k) => s.classList.toggle("on", k === i));
+    if (!reduced && pwrap) {
+      pwrap.classList.remove("switching");
+      void pwrap.offsetWidth;
+      pwrap.classList.add("switching");
+    }
+    blip();
   };
 
   /* ---------- horizontal strip ---------- */
@@ -222,7 +229,8 @@
         ta.remove();
       }
       blip();
-      setTimeout(() => { copyStatus.textContent = ""; }, 2400);
+      copyBtn.classList.add("ok");
+      setTimeout(() => { copyStatus.textContent = ""; copyBtn.classList.remove("ok"); }, 2400);
     });
   }
 
@@ -318,4 +326,153 @@
 
   // soft tick on primary buttons when sound is on
   $$(".btn, .nav-cta").forEach((el) => el.addEventListener("pointerdown", blip));
+
+  /* ---------- futuristic pass ---------- */
+
+  /* custom cursor: instant dot + lagging ring */
+  const curDot = $(".cursor-dot");
+  const curRing = $(".cursor-ring");
+  if (curDot && curRing && finePointer && !reduced) {
+    let mx = -100, my = -100, rx2 = -100, ry2 = -100;
+    window.addEventListener("mousemove", (e) => {
+      mx = e.clientX; my = e.clientY;
+      curDot.style.transform = `translate3d(${mx}px,${my}px,0) translate(-50%,-50%)`;
+    }, { passive: true });
+    const curLoop = () => {
+      rx2 = lerp(rx2, mx, 0.16);
+      ry2 = lerp(ry2, my, 0.16);
+      curRing.style.transform = `translate3d(${rx2}px,${ry2}px,0) translate(-50%,-50%)`;
+      requestAnimationFrame(curLoop);
+    };
+    requestAnimationFrame(curLoop);
+    $$("a, button, summary, .tool-card, .frame").forEach((el) => {
+      el.addEventListener("mouseenter", () => curRing.classList.add("hovering"));
+      el.addEventListener("mouseleave", () => curRing.classList.remove("hovering"));
+    });
+  }
+
+  /* hero constellation canvas */
+  const net = $("#hero-net");
+  if (net && !reduced) {
+    const nctx = net.getContext("2d");
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    let nw = 0, nh = 0, pts = [], netRun = false;
+    let nmX = -9999, nmY = -9999;
+    const netResize = () => {
+      const r = net.parentElement.getBoundingClientRect();
+      nw = r.width; nh = r.height;
+      net.width = nw * DPR; net.height = nh * DPR;
+      nctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      const n = Math.round(clamp((nw * nh) / 26000, 24, 64));
+      pts = Array.from({ length: n }, () => ({
+        x: Math.random() * nw, y: Math.random() * nh,
+        vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35
+      }));
+    };
+    netResize();
+    window.addEventListener("resize", netResize);
+    const heroEl = net.parentElement;
+    heroEl.addEventListener("mousemove", (e) => {
+      const r = net.getBoundingClientRect();
+      nmX = e.clientX - r.left; nmY = e.clientY - r.top;
+    });
+    heroEl.addEventListener("mouseleave", () => { nmX = nmY = -9999; });
+    const netStep = () => {
+      if (!netRun) return;
+      nctx.clearRect(0, 0, nw, nh);
+      for (const p of pts) {
+        p.x += p.vx; p.y += p.vy;
+        const dx = p.x - nmX, dy = p.y - nmY, d2 = dx * dx + dy * dy;
+        if (d2 < 14400) { const d = Math.sqrt(d2) || 1; p.x += (dx / d) * 0.7; p.y += (dy / d) * 0.7; }
+        if (p.x < 0 || p.x > nw) p.vx *= -1;
+        if (p.y < 0 || p.y > nh) p.vy *= -1;
+      }
+      nctx.lineWidth = 1;
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const a = pts[i], b = pts[j];
+          const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+          if (d2 < 16900) {
+            nctx.strokeStyle = `rgba(110,168,255,${(1 - d2 / 16900) * 0.22})`;
+            nctx.beginPath(); nctx.moveTo(a.x, a.y); nctx.lineTo(b.x, b.y); nctx.stroke();
+          }
+        }
+      }
+      nctx.fillStyle = "rgba(154,180,220,0.55)";
+      for (const p of pts) nctx.fillRect(p.x - 1, p.y - 1, 2, 2);
+      requestAnimationFrame(netStep);
+    };
+    new IntersectionObserver((es) => {
+      es.forEach((e) => {
+        const was = netRun;
+        netRun = e.isIntersecting;
+        if (netRun && !was) requestAnimationFrame(netStep);
+      });
+    }).observe(net);
+  }
+
+  /* kicker decode / scramble on reveal */
+  if (!reduced) {
+    const glyphs = "!<>-_\\/[]{}=+*^?#01";
+    const scramble = (el) => {
+      const orig = el.dataset.orig || el.textContent;
+      el.dataset.orig = orig;
+      const total = orig.length;
+      const t0 = performance.now();
+      const dur = 650;
+      const tickFn = (t) => {
+        const p = clamp((t - t0) / dur, 0, 1);
+        const settled = Math.floor(p * total);
+        let out = "";
+        for (let k = 0; k < total; k++) {
+          const ch = orig[k];
+          out += (k < settled || ch === " " || ch === "\u00b7" || ch === "&") ? ch : glyphs[(Math.random() * glyphs.length) | 0];
+        }
+        el.textContent = out;
+        if (p < 1) requestAnimationFrame(tickFn);
+        else el.textContent = orig;
+      };
+      requestAnimationFrame(tickFn);
+    };
+    const scIO = new IntersectionObserver((es) => {
+      es.forEach((e) => {
+        if (e.isIntersecting) { scramble(e.target); scIO.unobserve(e.target); }
+      });
+    }, { threshold: 0.6 });
+    $$("[data-scramble]").forEach((el) => scIO.observe(el));
+  }
+
+  /* scroll-velocity reactive marquee */
+  const mq = $(".marquee-track");
+  if (mq && !reduced) {
+    mq.style.animation = "none";
+    let mqOff = 0;
+    let mqHalf = mq.scrollWidth / 2;
+    window.addEventListener("resize", () => { mqHalf = mq.scrollWidth / 2; });
+    const mqLoop = () => {
+      if (mqHalf > 0) {
+        mqOff = (mqOff + 0.55 + clamp(velocity * 0.14, 0, 7)) % mqHalf;
+        mq.style.transform = `translate3d(${-mqOff}px,0,0)`;
+      }
+      requestAnimationFrame(mqLoop);
+    };
+    requestAnimationFrame(mqLoop);
+  }
+
+  /* 3D tilt on tool cards */
+  if (finePointer && !reduced) {
+    $$("[data-tiltcard]").forEach((card) => {
+      card.addEventListener("mousemove", (e) => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.setProperty("--ry", (x * 9).toFixed(2) + "deg");
+        card.style.setProperty("--rx", (-y * 9).toFixed(2) + "deg");
+      });
+      card.addEventListener("mouseleave", () => {
+        card.style.setProperty("--rx", "0deg");
+        card.style.setProperty("--ry", "0deg");
+      });
+    });
+  }
 })();

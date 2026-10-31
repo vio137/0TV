@@ -16,8 +16,8 @@
     </item>
     <item>
         <shape android:shape="rectangle">
-            <gradient android:angle="270" android:startColor="#2EFFFFFF" android:endColor="#14FFFFFF" />
-            <stroke android:width="1dp" android:color="#38FFFFFF" />
+            <solid android:color="#FF171C26" />
+            <stroke android:width="1dp" android:color="#29FFFFFF" />
             <corners android:radius="21dp" />
         </shape>
     </item>

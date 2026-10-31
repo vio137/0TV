@@ -122,10 +122,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="READY WHEN YOU ARE"
-                android:textSize="11sp"
-                android:letterSpacing="0.16"
-                android:textColor="#FF50DDD8"
+                android:text="Ready when you are"
+                android:textSize="12sp"
+                android:letterSpacing="0.02"
+                android:textColor="#99FFFFFF"
                 android:fontFamily="@string/font_medium" />
             <TextView
                 android:id="@+id/heroName"
@@ -202,10 +202,9 @@
                     android:ellipsize="end"
                     android:layout_marginStart="4dp"
                     android:textColor="#8CFFFFFF"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:fontFamily="@string/font_medium"
-                    android:letterSpacing="0.22"
-                    android:textAllCaps="true" />
+                    android:letterSpacing="0.02" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -287,8 +286,7 @@
                             android:textColor="#A6FFFFFF"
                             android:textSize="14sp"
                             android:fontFamily="@string/font_regular"
-                            android:letterSpacing="0.14"
-                            android:textAllCaps="true" />
+                            android:letterSpacing="0.02" />
 
                         <!-- Lunar date ("Lunar 13/9 · Year of the Horse"), shown when lunar_date is on. -->
                         <TextView
@@ -302,8 +300,7 @@
                             android:textColor="#80FFFFFF"
                             android:textSize="14sp"
                             android:fontFamily="@font/outfit_regular"
-                            android:letterSpacing="0.14"
-                            android:textAllCaps="true"
+                            android:letterSpacing="0.02"
                             android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>

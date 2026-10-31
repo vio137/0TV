@@ -51,7 +51,7 @@ fun AdBlockScreen(
         bottom = {
             if (!s.loading && s.supported) {
                 if (on) BigButton(if (s.busy) "Turning off…" else "Turn off ad blocking", onUnblock, color = Color.White, textColor = Tidy.Ink, enabled = !s.busy)
-                else BigButton(if (s.busy) "Turning on…" else "Block ads and trackers", { onBlock(AdBlockProvider.ADS, false) }, color = Tidy.Green, enabled = !s.busy)
+                else BigButton(if (s.busy) "Turning on…" else "Block ads and trackers", { onBlock(AdBlockProvider.ADS, false) }, color = Tidy.Blue, enabled = !s.busy)
             }
         },
     ) {
@@ -80,14 +80,14 @@ fun AdBlockScreen(
             Outline {
                 Text("Replace the DNS this TV already uses (${s.dns?.host})? Turning this off puts it back.", style = MaterialTheme.typography.titleMedium, color = Tidy.Ink)
                 Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    BigButton("Replace it", { s.confirmReplace?.let { onBlock(it, true) } ?: s.confirmReplaceHost?.let { onCustom(it, true) } }, Modifier.weight(1f), color = Tidy.Green)
+                    BigButton("Replace it", { s.confirmReplace?.let { onBlock(it, true) } ?: s.confirmReplaceHost?.let { onCustom(it, true) } }, Modifier.weight(1f), color = Tidy.Blue)
                     BigButton("Keep it", onCancelReplace, Modifier.weight(1f), color = Color.White, textColor = Tidy.Ink)
                 }
             }
         }
         if (!on) Note(AdBlockInfo.DISCLOSURE)
-        CardBox(color = Tidy.GreenSoft) {
-            Text("What it can block", style = MaterialTheme.typography.titleMedium, color = Tidy.GreenInk)
+        CardBox(color = Tidy.BlueSoft) {
+            Text("What it can block", style = MaterialTheme.typography.titleMedium, color = Tidy.BlueInk)
             Column(Modifier.padding(top = 6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 AdBlockInfo.BLOCKS.forEach { Text("✓  $it", style = MaterialTheme.typography.bodyLarge, color = Tidy.Ink) }
             }

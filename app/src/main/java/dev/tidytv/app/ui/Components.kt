@@ -72,10 +72,9 @@ fun BigButton(
 ) {
     // Flat, quiet buttons. A near-white colour from older call sites means "secondary" here.
     val secondary = color.luminance() > 0.8f || color == Tidy.Grey
-    val bg = when { !enabled -> Tidy.Grey; secondary -> Tidy.Grey; else -> color }
-    val fg = when { !enabled -> Tidy.Muted; secondary -> Tidy.Ink; else -> textColor }
-    val shape = RoundedCornerShape(16.dp)
-    // The accent (primary) action wears the same blue-to-aqua gradient as the hub's feature card; other colours stay flat.
+    val bg = when { !enabled -> Tidy.Raise; secondary -> Tidy.Raise; else -> color }
+    val fg = when { !enabled -> Tidy.Faint; secondary -> Tidy.Ink; else -> textColor }
+    val shape = RoundedCornerShape(14.dp)
     val accent = enabled && !secondary && color == Tidy.Blue
     val src = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
     val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
@@ -83,7 +82,7 @@ fun BigButton(
         modifier.fillMaxWidth()
             .pressScale(src, enabled)
             .clip(shape)
-            .then(if (accent) Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Tidy.Blue, Color(0xFF1B58C9), Tidy.Aqua.copy(alpha = 0.85f)))) else Modifier.background(bg))
+            .background(bg)
             .then(if (secondary || !enabled) Modifier.border(1.dp, Tidy.Line, shape) else Modifier)
             .clickable(interactionSource = src, indication = androidx.compose.foundation.LocalIndication.current, enabled = enabled, role = Role.Button) {
                 if (accent) haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
@@ -104,22 +103,22 @@ fun BigButton(
 fun ChoiceButton(text: String, icon: ImageVector, color: Color, textColor: Color = Color.White, badge: String? = null, onClick: () -> Unit) {
     val src = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
     Row(
-        Modifier.fillMaxWidth().pressScale(src).clip(Chunky).background(color)
+        Modifier.fillMaxWidth().pressScale(src).clip(Chunky).background(Tidy.Raise).border(1.dp, Tidy.Line, Chunky)
             .clickable(interactionSource = src, indication = androidx.compose.foundation.LocalIndication.current, role = Role.Button, onClick = onClick)
             .heightIn(min = 64.dp).padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(icon, null, Modifier.size(30.dp), tint = textColor)
+        Icon(icon, null, Modifier.size(26.dp), tint = color)
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
-            Text(text, style = MaterialTheme.typography.titleLarge, color = textColor)
+            Text(text, style = MaterialTheme.typography.titleLarge, color = Tidy.Ink)
             if (badge != null) Text(
-                badge, style = MaterialTheme.typography.labelMedium, color = textColor,
-                modifier = Modifier.padding(top = 2.dp).clip(RoundedCornerShape(99.dp)).background(Color.White.copy(alpha = 0.25f))
+                badge, style = MaterialTheme.typography.labelMedium, color = Tidy.BlueInk,
+                modifier = Modifier.padding(top = 4.dp).clip(RoundedCornerShape(8.dp)).background(Tidy.BlueSoft)
                     .padding(horizontal = 8.dp, vertical = 2.dp),
             )
         }
-        Icon(Icons.Rounded.ChevronRight, null, Modifier.size(28.dp), tint = textColor)
+        Icon(Icons.Rounded.ChevronRight, null, Modifier.size(24.dp), tint = Tidy.Faint)
     }
 }
 
@@ -138,9 +137,9 @@ fun TextLink(text: String, onClick: () -> Unit, color: Color = Tidy.Blue, modifi
 @Composable
 fun CardBox(modifier: Modifier = Modifier, color: Color = Tidy.Card, border: Color? = null, content: @Composable ColumnScope.() -> Unit) {
     Column(
-        modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp)).background(color)
-            .then(if (border != null) Modifier.border(2.dp, border, RoundedCornerShape(22.dp)) else Modifier)
-            .padding(16.dp),
+        modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(color)
+            .border(1.dp, border ?: Tidy.Line, RoundedCornerShape(16.dp))
+            .padding(20.dp),
         content = content,
     )
 }
@@ -149,15 +148,15 @@ fun CardBox(modifier: Modifier = Modifier, color: Color = Tidy.Card, border: Col
 fun Note(text: String, color: Color = Tidy.Amber, textColor: Color = Tidy.AmberInk) {
     Text(
         text, style = MaterialTheme.typography.bodyMedium, color = textColor,
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(color).padding(14.dp),
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(color).border(1.dp, Tidy.Line, RoundedCornerShape(14.dp)).padding(14.dp),
     )
 }
 
 @Composable
 fun SafetyBanner(text: String) {
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Tidy.GreenSoft)
-            .border(2.dp, Tidy.Green, RoundedCornerShape(16.dp)).padding(14.dp),
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(Tidy.GreenSoft)
+            .border(1.dp, Tidy.Green.copy(alpha = 0.5f), RoundedCornerShape(14.dp)).padding(14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Check(Tidy.Green, 22.dp)
@@ -199,9 +198,9 @@ fun Spinner(size: Dp = 22.dp, color: Color = Tidy.Blue) {
 @Composable
 fun TickBox(checked: Boolean) {
     Box(
-        Modifier.size(28.dp).clip(RoundedCornerShape(9.dp))
-            .background(if (checked) Tidy.Blue else Tidy.Grey)
-            .border(1.5.dp, if (checked) Tidy.Blue else Tidy.Muted, RoundedCornerShape(9.dp)),
+        Modifier.size(26.dp).clip(RoundedCornerShape(7.dp))
+            .background(if (checked) Tidy.Blue else Tidy.Raise)
+            .border(1.dp, if (checked) Tidy.Blue else Tidy.LineStrong, RoundedCornerShape(7.dp)),
         contentAlignment = Alignment.Center,
     ) { if (checked) Check(Color.White, 18.dp) }
 }
@@ -257,7 +256,7 @@ object BrandIcons {
     }
 }
 
-private val groupTints = listOf(Color(0xFFFFE1E1), Color(0xFFE1ECFF), Color(0xFFEDE3FF), Color(0xFFE0F5E9), Color(0xFFFFEFD9), Color(0xFFE3F4F8))
+private val groupTints = listOf(Color(0xFF1B2230), Color(0xFF1B2230), Color(0xFF1B2230), Color(0xFF1B2230), Color(0xFF1B2230), Color(0xFF1B2230))
 
 /** Real app icons read from the TV, by package (file paths on the phone). */
 val LocalTvIcons = androidx.compose.runtime.staticCompositionLocalOf<Map<String, String>> { emptyMap() }
@@ -278,7 +277,7 @@ fun AppIcon(pkg: String, label: String, size: Dp = 36.dp) {
     val icon = AppLabels.iconSlug(pkg)?.let { icons[it] }
     Box(
         Modifier.size(size).clip(CircleShape)
-            .background(if (icon != null) Color.White else groupTints[Math.floorMod(pkg.hashCode(), groupTints.size)])
+            .background(if (icon != null) Color(0xFFF2F4F8) else groupTints[Math.floorMod(pkg.hashCode(), groupTints.size)])
             .border(1.5.dp, Tidy.Line, CircleShape),
         contentAlignment = Alignment.Center,
     ) {
@@ -287,7 +286,7 @@ fun AppIcon(pkg: String, label: String, size: Dp = 36.dp) {
                 scale(this.size.width / 24f, this.size.height / 24f, pivot = Offset.Zero) { drawPath(icon.path, icon.color) }
             }
         } else {
-            Text(AppLabels.initials(label), style = MaterialTheme.typography.labelMedium, color = Color(0xFF1B2540)) // dark on the light tint: Tidy.Ink is near-white and was unreadable here
+            Text(AppLabels.initials(label), style = MaterialTheme.typography.labelMedium, color = Tidy.Muted)
         }
     }
 }
@@ -300,10 +299,10 @@ fun ProgressBar(fractionTarget: Float, color: Color = Tidy.Blue) {
         label = "progress",
     )
     Box(
-        Modifier.fillMaxWidth().heightIn(min = 20.dp).clip(RoundedCornerShape(99.dp))
-            .background(Color.White).border(2.dp, Tidy.Ink, RoundedCornerShape(99.dp)),
+        Modifier.fillMaxWidth().heightIn(min = 8.dp).clip(RoundedCornerShape(99.dp))
+            .background(Tidy.Raise),
     ) {
-        Box(Modifier.fillMaxWidth(fraction.coerceIn(0f, 1f)).heightIn(min = 20.dp).background(color, RoundedCornerShape(99.dp)))
+        Box(Modifier.fillMaxWidth(fraction.coerceIn(0f, 1f)).heightIn(min = 8.dp).background(color, RoundedCornerShape(99.dp)))
     }
 }
 

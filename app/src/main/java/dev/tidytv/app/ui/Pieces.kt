@@ -78,9 +78,10 @@ fun ChipRow(modifier: Modifier = Modifier, center: Boolean = false, content: @Co
 
 /** A drawn icon on a coloured rounded square, for group headers and step cards. */
 @Composable
-fun IconBadge(icon: ImageVector, color: Color, size: Dp = 36.dp, tint: Color = Color.White) {
-    Box(Modifier.size(size).clip(RoundedCornerShape(size * 0.3f)).background(color), contentAlignment = Alignment.Center) {
-        Icon(icon, null, Modifier.size(size * 0.58f), tint = tint)
+fun IconBadge(icon: ImageVector, color: Color, size: Dp = 36.dp, tint: Color = Color.Unspecified) {
+    val glyph = if (tint == Color.Unspecified) color else tint
+    Box(Modifier.size(size).clip(RoundedCornerShape(size * 0.3f)).background(color.copy(alpha = 0.14f)), contentAlignment = Alignment.Center) {
+        Icon(icon, null, Modifier.size(size * 0.58f), tint = glyph)
     }
 }
 

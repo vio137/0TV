@@ -15,8 +15,8 @@ android {
         applicationId = "app.tvtidy.cleaner"
         minSdk = 26
         targetSdk = 36
-        versionCode = 8
-        versionName = "1.0.0-rc8"
+        versionCode = 9
+        versionName = "1.1.0"
     }
 
     // Release signing comes from keys/signing.properties, a git-ignored folder in the repo.
@@ -53,7 +53,11 @@ android {
     packaging {
         resources.excludes += setOf("META-INF/versions/9/OSGI-INF/MANIFEST.MF", "META-INF/DEPENDENCIES", "META-INF/LICENSE*", "META-INF/NOTICE*")
     }
-    testOptions { unitTests.isIncludeAndroidResources = true }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        // Small build boxes: -PtestHeap=512m keeps the Robolectric test JVM inside the machine's RAM.
+        unitTests.all { it.maxHeapSize = providers.gradleProperty("testHeap").orElse("1024m").get() }
+    }
     sourceSets["main"].assets.directories += "build/generated/lists"
 }
 

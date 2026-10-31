@@ -45,6 +45,14 @@ class MotionTest {
     private fun px(a: Bitmap) = IntArray(a.width * a.height).also { a.getPixels(it, 0, a.width, 0, 0, a.width, a.height) }
     private fun same(a: Bitmap, b: Bitmap) = a.width == b.width && a.height == b.height && px(a).contentEquals(px(b))
     private fun diff(a: Bitmap, b: Bitmap): Double { val x = px(a); val y = px(b); return x.indices.count { x[it] != y[it] }.toDouble() / x.size }
+    /** Mean per-pixel channel distance: how far apart two frames look, not just how many pixels moved. */
+    private fun diffMag(a: Bitmap, b: Bitmap): Double {
+        val x = px(a); val y = px(b); var total = 0.0
+        for (i in x.indices) {
+            total += kotlin.math.abs(Color.red(x[i]) - Color.red(y[i])) + kotlin.math.abs(Color.green(x[i]) - Color.green(y[i])) + kotlin.math.abs(Color.blue(x[i]) - Color.blue(y[i]))
+        }
+        return total / x.size
+    }
     private fun filmstrip(name: String, labels: List<String>, frames: List<Bitmap>) {
         val w = frames[0].width; val h = frames[0].height; val pad = 24
         val out = Bitmap.createBitmap(frames.size * (w + pad) + pad, h + 120, Bitmap.Config.ARGB_8888)
@@ -92,11 +100,16 @@ class MotionTest {
         rule.mainClock.advanceTimeBy(60); val early = frame()
         rule.mainClock.advanceTimeBy(300); val held = frame()
         rule.onNodeWithTag("b").performTouchInput { up() }
-        rule.mainClock.advanceTimeBy(600); val back = frame()
+        // Let the release spring settle AND the ripple fade fully; a solid-colour button otherwise
+        // keeps a fading ripple whose pixels outweigh the small pressed-scale edge band.
+        rule.mainClock.advanceTimeBy(1500); val back = frame()
         filmstrip("motion_button_press", listOf("rest", "60 ms down", "held", "released"), listOf(rest, early, held, back))
         assertFalse("pressed state differs from rest", same(rest, held))
         assertFalse("pressing is animated, not a jump", same(early, held))
-        assertTrue("released frame is closer to rest than the held frame is", diff(rest, back) < diff(rest, held))
+        // Distance, not differing-pixel count: a solid-fill button's held frame moves few pixels but at
+        // full edge contrast, while the settling release leaves a faint whole-button residue that a
+        // pixel-count comparison would wrongly score as further from rest.
+        assertTrue("released frame is closer to rest than the held frame is", diffMag(rest, back) < diffMag(rest, held))
         fun width(b: Bitmap): Int {
             val y = b.height / 2
             val xs = (0 until b.width).filter { x -> val c = b.getPixel(x, y); Color.blue(c) - Color.red(c) > 35 }

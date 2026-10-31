@@ -26,6 +26,7 @@ import dev.tidytv.app.ui.Bubble
 import dev.tidytv.app.ui.ChoiceButton
 import dev.tidytv.app.ui.ChipRow
 import dev.tidytv.app.ui.InfoChip
+import dev.tidytv.app.ui.TvPicture
 import dev.tidytv.app.ui.MoreInfo
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
@@ -76,7 +77,7 @@ fun WelcomeScreen(
             if (about) dev.tidytv.app.ui.AboutSheet({ about = false }, actions.openUrl)
             TextLink("About", { about = true }, color = Tidy.Muted)
             TextLink("Feedback", { actions.feedback(dev.tidytv.app.ui.FeedbackRequest(dev.tidytv.app.data.FeedbackKind.FEATURE, "welcome")) }, color = Tidy.Muted)
-            TextLink("Restore a TV", onRestore, icon = Icons.Rounded.Restore)
+            TextLink("Restore a TV", onRestore, color = Tidy.Muted, icon = Icons.Rounded.Restore)
         }
     }) {
         if (savedTvs.isNotEmpty()) {
@@ -114,17 +115,22 @@ fun WelcomeScreen(
             )
             HeroMascot(height = 96.dp)
         } else {
-            HeroMascot(height = 120.dp)
+            androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth().padding(vertical = 12.dp), contentAlignment = Alignment.Center) {
+                TvPicture(width = 168.dp)
+            }
             Title("0TV")
             Body("A calmer TV starts here.", color = Tidy.Muted)
-            Body("Review preloaded apps and switch them off over Wi-Fi. 0TV saves a backup and offers restore tools. Keep that backup: uninstalling this phone app can remove its recovery history. Permanently removed app data cannot be restored.", color = Tidy.Muted)
+            androidx.compose.material3.Text(
+                "Review preloaded apps and switch them off over Wi-Fi. 0TV saves a backup and offers restore tools. Keep that backup: uninstalling this phone app can remove its recovery history. Permanently removed app data cannot be restored.",
+                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium, color = Tidy.Muted,
+            )
         }
         if (savedTvs.isEmpty()) ConnectBlock()
-        ChipRow(center = true) {
-            InfoChip(Icons.Rounded.Favorite, "Free")
-            InfoChip(Icons.Rounded.Shield, "No tracking")
-            InfoChip(Icons.Rounded.Backup, "Backup first")
-        }
+        if (savedTvs.isEmpty()) androidx.compose.material3.Text(
+            "Free  ·  No tracking  ·  Backup first",
+            style = androidx.compose.material3.MaterialTheme.typography.labelMedium, color = Tidy.Faint,
+            modifier = Modifier.fillMaxWidth(), textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        )
     }
 }
 

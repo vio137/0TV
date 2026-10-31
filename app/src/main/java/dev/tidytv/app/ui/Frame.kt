@@ -65,10 +65,10 @@ fun ScreenFrame(
     bottom: (@Composable ColumnScope.() -> Unit)? = null,
     body: @Composable ColumnScope.() -> Unit,
 ) {
-    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xFF0B1226), Tidy.Backdrop))).safeDrawingPadding().imePadding(), contentAlignment = Alignment.TopCenter) {
+    Box(Modifier.fillMaxSize().background(Tidy.Backdrop).safeDrawingPadding().imePadding(), contentAlignment = Alignment.TopCenter) {
         Column(
             Modifier.widthIn(max = 560.dp).fillMaxSize().padding(horizontal = 12.dp, vertical = 10.dp)
-                .clip(RoundedCornerShape(24.dp)).background(Tidy.Card).border(1.dp, Tidy.Line, RoundedCornerShape(24.dp)),
+                .clip(RoundedCornerShape(20.dp)).background(Tidy.Card).border(1.dp, Tidy.Line, RoundedCornerShape(20.dp)),
         ) {
             if (top != null) Box(Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, top = 6.dp)) { top() }
             Column(
@@ -97,7 +97,7 @@ fun TopBar(back: String, onBack: () -> Unit, tvName: String?) {
         Spacer(Modifier.weight(1f))
         if (tvName != null) Text(
             tvName, style = MaterialTheme.typography.labelMedium, color = Tidy.Ink, maxLines = 1,
-            modifier = Modifier.background(Tidy.BlueSoft, RoundedCornerShape(999.dp)).padding(horizontal = 12.dp, vertical = 6.dp),
+            modifier = Modifier.background(Tidy.Raise, RoundedCornerShape(999.dp)).border(1.dp, Tidy.Line, RoundedCornerShape(999.dp)).padding(horizontal = 12.dp, vertical = 6.dp),
         )
     }
 }
@@ -113,9 +113,9 @@ fun Body(text: String, color: Color = Tidy.Muted, align: TextAlign = TextAlign.S
 
 /** Speech bubble the mascot "says", as in concept C. */
 @Composable
-fun Bubble(text: String, color: Color = Tidy.BlueSoft, textColor: Color = Tidy.Ink, leading: (@Composable () -> Unit)? = null) {
+fun Bubble(text: String, color: Color = Tidy.Raise, textColor: Color = Tidy.Ink, leading: (@Composable () -> Unit)? = null) {
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(26.dp)).background(color).padding(horizontal = 20.dp, vertical = 16.dp),
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(color).border(1.dp, Tidy.Line, RoundedCornerShape(16.dp)).padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (leading != null) { leading(); Spacer(Modifier.width(12.dp)) }
@@ -137,12 +137,12 @@ fun HeroMascot(worried: Boolean = false, mood: Mood = if (worried) Mood.WORRIED 
         Mood.HAPPY, Mood.CHEER -> androidx.compose.material.icons.Icons.Rounded.CheckCircle
         Mood.WORRIED -> androidx.compose.material.icons.Icons.Rounded.ErrorOutline
     }
-    val tint = if (mood == Mood.WORRIED) Tidy.AmberInk else if (mood == Mood.HAPPY || mood == Mood.CHEER) Tidy.GreenInk else Tidy.Aqua
+    val tint = if (mood == Mood.WORRIED) Tidy.AmberInk else if (mood == Mood.HAPPY || mood == Mood.CHEER) Tidy.GreenInk else Tidy.BlueInk
     Box(Modifier.fillMaxWidth().padding(vertical = 4.dp), contentAlignment = Alignment.Center) {
         Box(
-            Modifier.size(64.dp).clip(RoundedCornerShape(20.dp))
-                .background(Brush.linearGradient(listOf(Tidy.BlueSoft, Tidy.Card)))
-                .border(1.dp, Tidy.Line, RoundedCornerShape(20.dp))
+            Modifier.size(64.dp).clip(RoundedCornerShape(18.dp))
+                .background(Tidy.Raise)
+                .border(1.dp, Tidy.Line, RoundedCornerShape(18.dp))
                 .semantics { contentDescription = mood.description },
             contentAlignment = Alignment.Center,
         ) { androidx.compose.material3.Icon(icon, null, Modifier.size(30.dp), tint = tint) }
@@ -183,9 +183,10 @@ fun TvPicture(width: androidx.compose.ui.unit.Dp = 92.dp) {
         val w = size.width; val h = size.height
         drawRoundRect(Tidy.Ink, Offset(0f, 0f), Size(w, h * 0.86f), CornerRadius(w * 0.04f))
         drawRoundRect(
-            Brush.linearGradient(listOf(Color(0xFF2D5BFF), Color(0xFFB040E0), Color(0xFFFF5A3C), Color(0xFFFFB020)), Offset(0f, 0f), Offset(w, h)),
+            Brush.verticalGradient(listOf(Color(0xFF1B2B4D), Color(0xFF101827))),
             Offset(w * 0.035f, h * 0.05f), Size(w * 0.93f, h * 0.74f), CornerRadius(w * 0.02f),
         )
+        drawCircle(Color(0xFF3D7BFF), w * 0.045f, Offset(w * 0.5f, h * 0.42f))
         drawLine(Tidy.Ink, Offset(w * 0.2f, h * 0.86f), Offset(w * 0.14f, h), strokeWidth = w * 0.03f)
         drawLine(Tidy.Ink, Offset(w * 0.8f, h * 0.86f), Offset(w * 0.86f, h), strokeWidth = w * 0.03f)
     }

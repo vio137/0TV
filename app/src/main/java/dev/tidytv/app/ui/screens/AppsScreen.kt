@@ -127,7 +127,7 @@ private fun AppActionSheet(row: AppRow, name: String, onClose: () -> Unit, onTur
             row.keptByList || row.tier == Tier.YOUR_CALL -> Note("Think first: this app may be used by your TV or remote. Turning it off is easy to undo.", color = Tidy.Amber, textColor = Tidy.AmberInk)
             else -> Body("Turning it off hides it and stops it from running. One tap brings it back.", color = Tidy.Muted)
         }
-        if (!yours) BigButton("Turn off", { onTurnOff(row.pkg) }, color = Tidy.Green)
+        if (!yours) BigButton("Turn off", { onTurnOff(row.pkg) }, color = Tidy.Blue)
         BigButton(if (yours) "Uninstall for good" else "Uninstall for this TV", { onUninstall(row.pkg) }, color = if (yours) Tidy.Red else Color.White, textColor = if (yours) Color.White else Tidy.Ink)
     }
 }

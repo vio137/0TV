@@ -74,11 +74,11 @@ import dev.tidytv.core.lists.Candidate
 import dev.tidytv.core.lists.Group
 
 private fun Group.badge(): Pair<Color, ImageVector> = when (this) {
-    Group.ADS_TRACKING -> Color(0xFFFF4F6D) to Icons.Rounded.Campaign
+    Group.ADS_TRACKING -> Tidy.Red to Icons.Rounded.Campaign
     Group.PRELOADED -> Tidy.Orange to Icons.Rounded.Apps
     Group.VOICE -> Tidy.Purple to Icons.Rounded.Mic
-    Group.CASTING -> Color(0xFF16A3C9) to Icons.Rounded.Cast
-    Group.UPDATES -> Color(0xFF6B7A99) to Icons.Rounded.SystemUpdate
+    Group.CASTING -> Tidy.Aqua to Icons.Rounded.Cast
+    Group.UPDATES -> Tidy.Faint to Icons.Rounded.SystemUpdate
     Group.STREAMING -> Tidy.Green to Icons.Rounded.PlayArrow
 }
 
@@ -117,11 +117,11 @@ fun ReviewScreen(
             s.noList && s.extra.isEmpty() -> BigButton("Finish", onDone, color = Tidy.Blue)
             s.noList -> BigButton(
                 if (n == 0) "Pick apps to turn off" else "Turn off $n app${if (n == 1) "" else "s"}", onStart,
-                color = Tidy.Green, enabled = s.backup == BackupStatus.Saved && n > 0,
+                color = Tidy.Blue, enabled = s.backup == BackupStatus.Saved && n > 0,
             )
             else -> BigButton(
                 if (n == 0) "Pick apps to turn off" else "Turn off $n app${if (n == 1) "" else "s"}", onStart,
-                color = Tidy.Green, enabled = s.backup == BackupStatus.Saved && n > 0,
+                color = Tidy.Blue, enabled = s.backup == BackupStatus.Saved && n > 0,
             )
         }
     }) {

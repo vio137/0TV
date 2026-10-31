@@ -99,7 +99,7 @@ fun HubScreen(
     }
     val featured = items.first()
     val rest = items.drop(1)
-    ScreenFrame(top = { Row(Modifier.fillMaxWidth()) { TextLink("Change TV", onBack, icon = Icons.AutoMirrored.Rounded.ArrowBack) } }) {
+    ScreenFrame(top = { Row(Modifier.fillMaxWidth()) { TextLink("Change TV", onBack, color = Tidy.Muted, icon = Icons.AutoMirrored.Rounded.ArrowBack) } }) {
         if (tv != null) TvCard(tv.title, tv.model, preview = preview, onPreviewTap = onPreviewTap)
         if (facts.any) dev.tidytv.app.ui.ChipRow(center = false) {
             facts.freeStorageMb?.let { dev.tidytv.app.ui.InfoChip(Icons.Rounded.Storage, "${gbOrMb(it)} free", color = Tidy.BlueSoft, textColor = Tidy.Ink) }
@@ -118,17 +118,17 @@ fun HubScreen(
 /** The one primary action of the hub: a wide card with the accent gradient. */
 @Composable
 private fun FeaturedTile(item: HubItem) {
-    val shape = RoundedCornerShape(22.dp)
+    val shape = RoundedCornerShape(18.dp)
     val src = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
     Row(
         Modifier.fillMaxWidth().pressScale(src).clip(shape)
-            .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Tidy.Blue, Color(0xFF1B58C9), Tidy.Aqua.copy(alpha = 0.85f))))
+            .background(Tidy.Blue)
             .semantics { contentDescription = if (item.badge != null) "${item.title}, ${item.badge}" else item.title }
             .clickable(interactionSource = src, indication = androidx.compose.foundation.LocalIndication.current, role = Role.Button, onClick = item.onClick)
             .heightIn(min = 92.dp).padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(Modifier.size(52.dp).clip(RoundedCornerShape(16.dp)).background(Color.White.copy(alpha = 0.18f)), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(48.dp).clip(RoundedCornerShape(14.dp)).background(Color.White.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
             Icon(item.icon, null, Modifier.size(28.dp), tint = Color.White)
         }
         Spacer(Modifier.width(16.dp))
@@ -146,7 +146,7 @@ private fun GridTile(item: HubItem, modifier: Modifier) {
     val shape = RoundedCornerShape(20.dp)
     val src = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
     Column(
-        modifier.pressScale(src).clip(shape).background(Tidy.Backdrop).border(1.dp, Tidy.Line, shape)
+        modifier.pressScale(src).clip(shape).background(Tidy.Raise).border(1.dp, Tidy.Line, shape)
             .semantics { contentDescription = if (item.badge != null) "${item.title}, ${item.badge}" else item.title }
             .clickable(interactionSource = src, indication = androidx.compose.foundation.LocalIndication.current, role = Role.Button, onClick = item.onClick)
             .heightIn(min = 104.dp).padding(14.dp),
@@ -154,7 +154,7 @@ private fun GridTile(item: HubItem, modifier: Modifier) {
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top) {
             Box(Modifier.size(40.dp).clip(RoundedCornerShape(12.dp)).background(Tidy.BlueSoft), contentAlignment = Alignment.Center) {
-                Icon(item.icon, null, Modifier.size(22.dp), tint = Tidy.Aqua)
+                Icon(item.icon, null, Modifier.size(22.dp), tint = Tidy.BlueInk)
             }
             if (item.badge != null) Text(item.badge, style = MaterialTheme.typography.labelMedium, color = Tidy.GreenInk, maxLines = 1)
         }

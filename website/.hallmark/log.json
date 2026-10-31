@@ -1,0 +1,20 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "page",
+  "theme": "almanac",
+  "prompt": "Download page for 0TV, a free open-source phone app that tidies an Android TV",
+  "shape": "Bento Grid",
+  "axes": "mid/grotesk-sans/chromatic-magenta",
+  "hero": "Banner",
+  "nav": "masthead",
+  "footer": "index columns",
+  "imagery": "screenshots 9 (repo 1.1.0 renders)",
+  "entry": "masthead into Banner hero with the real Home screen",
+  "fingerprint": "hanging heads; 12-col asymmetric grid; hairline rules; pill controls in the grotesk; product renders with hairline outlines; no reveal",
+  "sections": "bento features, install register, spec sheet, optional-tools rows, conversational FAQ, ink download band",
+  "signature": "the real 0TV Home screen at poster width",
+  "date": "2026-10-31"
+ }
+]

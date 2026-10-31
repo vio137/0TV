@@ -1,90 +1,266 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0a0d13"><title>0TV - Less noise. More television.</title><meta name="description" content="A calmer Android TV starts on your phone. Review preloaded apps, save a backup, and switch to a thoughtfully redesigned Home. Free, open source, by ARNAB MANDAL."><meta property="og:title" content="0TV - Less noise. More television."><meta property="og:description" content="Your phone. Your TV. Your choice. Download 0TV for Android."><meta property="og:type" content="website"><meta property="og:image" content="https://vio137.github.io/0TV/assets/social.png"><link rel="icon" href="assets/icon.png"><link rel="stylesheet" href="style.css"><script src="app.js" defer></script></head>
-<body><a class="skip" href="#main">Skip to content</a>
-<header><a class="brand" href="#" aria-label="0TV home"><img src="assets/icon.png" alt="" width="30" height="30">0TV<span>by Arnab Mandal</span></a><nav aria-label="Main navigation"><a href="#experience">Experience</a><a href="#guide">Guide</a><a href="#questions">FAQ</a><a class="nav-download" href="#download">Get 0TV</a></nav></header>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#c4cbd2">
+<title>0TV - Less noise. More television.</title>
+<meta name="description" content="A calmer Android TV starts on your phone. Review preloaded apps, save a backup, and switch to a thoughtfully redesigned Home. Free, open source, by ARNAB MANDAL.">
+<meta property="og:title" content="0TV - Less noise. More television.">
+<meta property="og:description" content="Your phone. Your TV. Your choice. Download 0TV for Android.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://vio137.github.io/0TV/assets/social.png">
+<link rel="icon" href="assets/icon.png">
+<link rel="preload" href="assets/fonts/hanken-grotesk-500-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/newsreader-400-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="container">
+    <a class="wordmark" href="#" aria-label="0TV home">0TV</a>
+    <nav class="mastnav" aria-label="Main navigation">
+      <span class="byline">By Arnab Mandal</span>
+      <span class="mastnav-links">
+        <a href="#experience">The app</a>
+        <a href="#guide">Guide</a>
+        <a href="#questions">Questions</a>
+        <a href="#download">Download</a>
+      </span>
+      <span class="edition">Vol. 1.1.0, October 2026</span>
+    </nav>
+  </div>
+</header>
+
 <main id="main">
+
 <section class="hero">
-<div class="hero-meta"><span class="pill"><i></i>Your TV, on your terms</span><span class="pill">Android &middot; open source &middot; v1.1.0</span></div>
-<h1>Less noise.<br><em>More television.</em></h1>
-<p class="lead">A calmer Android TV starts on your phone. Review the apps you don't need. Make room for a Home you actually want.</p>
-<div class="hero-cta"><a class="button download-link" href="https://github.com/vio137/0TV/releases/download/v1.1.0/0TV-1.1.0.apk">Download for Android &darr;</a><div><p class="micro">Free APK &middot; Android 8+ phone &middot; 24.7 MB</p></div></div>
-<div class="hero-screens">
-<figure class="shot"><img src="assets/phone-welcome.png" width="600" height="1200" alt="0TV welcome screen: calm dark design, TV illustration, Connect your TV button"><figcaption>Welcome. Real render of the app.</figcaption></figure>
-<figure class="shot"><img src="assets/phone-hub.png" width="600" height="1200" alt="0TV hub for a connected TV: Tidy up tile, remote, send files, home screen tools"><figcaption>The hub for your TV. Real render of the app.</figcaption></figure>
-<figure class="shot"><img src="assets/phone-review.png" width="600" height="1200" alt="Review screen grouping preloaded apps with a backup saved first"><figcaption>Review before anything changes. Real render of the app.</figcaption></figure>
-</div>
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <h1>Less noise.<br>More television.</h1>
+      <p class="lead">The free phone app that tidies your Android TV.</p>
+      <p class="hero-actions">
+        <a class="btn btn--primary download-link" href="https://github.com/vio137/0TV/releases/download/v1.1.0/0TV-1.1.0.apk">Download 0TV</a>
+        <a class="btn" href="#guide">Read the guide</a>
+      </p>
+      <p class="hero-meta">Free and open source.<br>For Android 8 or newer phones.</p>
+    </div>
+    <figure class="hero-visual shot" data-kind="product">
+      <img src="assets/tv-home.png" width="1429" height="804" fetchpriority="high" alt="0TV Home on a TV: a flat dark home screen with one featured app and a row of large app banners">
+      <figcaption>0TV Home, the bundled launcher. Real 1.1.0 render.</figcaption>
+    </figure>
+  </div>
 </section>
 
-<section id="experience" class="section">
-<div class="section-label"><span>The experience</span><span>A fresh start, not a factory reset</span></div>
-<div class="section-heading"><h2>Your screen.<br><em>Your rules.</em></h2><p>Keep what you watch. Review what you don't. 0TV connects over your home network and puts the decisions back in your hands.</p></div>
-<div class="cards">
-<article class="card reveal"><span class="num">01</span><h3>A little less in the way.</h3><p>Review preloaded apps before switching selected ones off. A backup comes first, and protected system apps are excluded from normal cleanup.</p><p class="fine">Disabling is the normal cleanup path. Separate removal tools carry greater recovery limits. Read the confirmation before applying any change.</p></article>
-<article class="card reveal"><span class="num">02</span><h3>A front row for your apps.</h3><p>Choose <b>0TV Home</b> inside the phone app for the redesigned launcher. Large app banners, a clear focus ring and remote-friendly navigation keep the next choice visible.</p><p class="fine">New in 1.1.0: the ambient colour wash and frosted glass are gone - a flat, quiet Home that lets your apps do the talking.</p></article>
-<article class="card reveal"><span class="num">03</span><h3>The remote is in your hand.</h3><p>A phone remote, text input, app launching, file sending and a check for apps that came back after an update. All in the same companion app.</p><p class="fine">Key support and file-transfer behavior depend on TV firmware. Full phone-to-TV workflows have not been proven on every device.</p></article>
-</div>
+<section class="section" id="experience">
+  <div class="container">
+    <div class="head-block">
+      <h2>What the phone app does</h2>
+    </div>
+    <div class="bento">
+      <article class="tile tile--lead">
+        <img class="shot" src="assets/phone-review.png" width="600" height="1200" loading="lazy" alt="The review screen: backup saved, preloaded apps grouped with switches, a Turn off button">
+        <div class="tile-body">
+          <h3>Review, then switch off.</h3>
+          <p>Preloaded apps, grouped by what they do; a backup is saved first.</p>
+          <p class="fine">Removal carries more risk.</p>
+        </div>
+      </article>
+      <article class="tile">
+        <img class="shot" src="assets/phone-remote.png" width="600" height="1200" loading="lazy" alt="The phone remote: D-pad or touchpad, Back, Home, Menu, volume and app shortcuts">
+        <div class="tile-body">
+          <h3>The remote is in your hand.</h3>
+          <p>D-pad or touchpad, text input, app launching, file sending.</p>
+          <p class="fine">Key support depends on TV firmware.</p>
+        </div>
+      </article>
+      <article class="tile">
+        <img class="shot" src="assets/tv-library.png" width="1429" height="804" loading="lazy" alt="The 0TV Home app library: large flat banners for the installed apps, nothing else">
+        <div class="tile-body">
+          <h3>A front row for your apps.</h3>
+          <p>0TV Home: large banners, a clear focus ring. Flat and quiet in 1.1.0.</p>
+        </div>
+      </article>
+      <article class="tile tile--text">
+        <div class="tile-body">
+          <h3>Back up first.</h3>
+          <p>Every cleanup starts from a saved backup.</p>
+          <p class="fine">Permanently deleted app data cannot be recovered.</p>
+        </div>
+      </article>
+      <article class="tile tile--text">
+        <div class="tile-body">
+          <h3>No account, no analytics.</h3>
+          <p>No account, analytics, crash reporter or update check; the site itself runs none.</p>
+        </div>
+      </article>
+      <article class="tile tile--text">
+        <div class="tile-body">
+          <h3>It checks what came back.</h3>
+          <p>A review pass flags apps that returned after a TV update.</p>
+          <p class="fine">Not proven on every device.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="guide">
+  <div class="container guide-grid">
+    <div>
+      <div class="head-block">
+        <h2>From download to a new Home</h2>
+        <p class="lead">The phone app installs the launcher on the TV.</p>
+      </div>
+      <ol class="register">
+        <li><b>Download and open the APK</b> on Android 8 or newer; allow “Install unknown apps” if asked.</li>
+        <li><b>Prepare the TV.</b> Turn on Developer options and ADB or Wireless debugging.</li>
+        <li><b>Share one network.</b> Phone and TV on the same home network; no guest networks.</li>
+        <li><b>Connect and approve.</b> Accept the prompt on the TV; Wireless debugging needs its pairing code.</li>
+        <li><b>Review and tidy.</b> Wait for the backup, then switch off what you don’t want.</li>
+        <li><b>Choose 0TV Home.</b> From the hub, pick Home screen, then 0TV Home.</li>
+      </ol>
+      <p class="fine" style="margin-top: var(--space-lg)">Keep the app installed so recovery history survives.</p>
+      <p class="more"><a href="https://github.com/vio137/0TV/blob/main/docs/GUIDE.md">The complete guide, on GitHub</a></p>
+    </div>
+    <figure class="guide-visual" data-kind="product">
+      <img class="shot" src="assets/phone-welcome.png" width="600" height="1200" loading="lazy" alt="The 0TV welcome screen: a calm dark page with a Connect your TV button">
+      <figcaption>The first screen. Real 1.1.0 render.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section section--sheet">
+  <div class="container">
+    <div class="sheet">
+      <div class="sheet-head">
+        <h2>Version 1.1.0, on record</h2>
+        <p class="sheet-date">Released 31 October 2026</p>
+      </div>
+      <table>
+        <tbody>
+          <tr><th scope="row">Package</th><td class="num">0TV-1.1.0.apk</td></tr>
+          <tr><th scope="row">Size</th><td class="num">24,743,846 bytes</td></tr>
+          <tr><th scope="row">Phone</th><td class="num">Android 8.0 or newer</td></tr>
+          <tr><th scope="row">Architectures</th><td class="num">ARM64, ARMv7</td></tr>
+          <tr><th scope="row">Updating</th><td class="num">Installs in place over 1.0.0-rc8</td></tr>
+          <tr><th scope="row">Signing</th><td class="num">Unchanged since rc8</td></tr>
+          <tr><th scope="row">Licence</th><td class="num">GPL-3.0, parts keep theirs</td></tr>
+          <tr><th scope="row">SHA-256</th><td class="num num--hash">deffb01fe208371d8d7a12b2e27adb74eaeafa5122904dcff5a4dd8c70fd1683</td></tr>
+          <tr><th scope="row">Compatibility</th><td class="num">Android TV, Google TV; Fire TV partial; Tizen and webOS no</td></tr>
+          <tr><th scope="row">Verified</th><td class="num">Automated suite and renders; no physical-TV test of 1.1.0. <a href="https://github.com/vio137/0TV/blob/main/docs/TESTING.md">Testing notes</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
 <section class="section">
-<div class="section-label"><span>Principles</span><span>Phone &rarr; Wi-Fi &rarr; TV</span></div>
-<div class="section-heading"><h2>One companion.<br><em>Clear ground rules.</em></h2></div>
-<div class="cards">
-<article class="card"><h3>Review first.</h3><p>No blind cleanup. See the choices before confirming.</p></article>
-<article class="card"><h3>Back up first.</h3><p>Keep recovery history. Restore has limits, not magic.</p></article>
-<article class="card"><h3>No account required.</h3><p>No analytics or automatic feedback upload in this build.</p></article>
-</div>
+  <div class="container">
+    <div class="head-block">
+      <h2>Optional tools, off by default</h2>
+      <p class="lead">Each is a separate, explicit choice.</p>
+    </div>
+    <div class="rows">
+      <div class="row">
+        <h3>Block ads</h3>
+        <div><p>Points the TV’s Private DNS at AdGuard (Android 9 or newer); off restores the saved setting.</p>
+        <p class="fine">Queries go to a third party; YouTube in-video ads stay.</p></div>
+      </div>
+      <div class="row">
+        <h3>J10TV</h3>
+        <div><p>Installs the open-source JioTV Go app from its GitHub releases, verified first.</p>
+        <p class="fine">You sign in with your Jio account.</p></div>
+      </div>
+      <div class="row">
+        <h3>TizenTube Cobalt</h3>
+        <div><p>An independent YouTube client, checked before sending.</p>
+        <p class="fine">Restore does not roll it back; unaffiliated with YouTube or TizenTube.</p></div>
+      </div>
+      <div class="row">
+        <h3>App2TV</h3>
+        <div><p>Copies an app from your phone to the TV.</p>
+        <p class="fine">Compatibility checked first; physical transfer unverified.</p></div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section id="guide" class="section">
-<div class="section-label"><span>The field guide</span><span>From first download to a new Home</span></div>
-<div class="section-heading"><h2>Settle in.<br><em>Step by step.</em></h2><p>0TV is installed on your Android phone, not directly on the TV. The phone app handles the bundled launcher installation when you choose it.</p></div>
-<div class="steps">
-<div class="step"><b>1</b><div><h3>Download, open, install.</h3><p>Download the APK on your Android 8.0+ phone and open it. If Android asks, allow &ldquo;Install unknown apps&rdquo; for that app, then return to the installer. You can turn that permission off again afterward. Already have 0TV? 1.1.0 installs in place - keep the app installed to preserve local history.</p></div></div>
-<div class="step"><b>2</b><div><h3>Prepare your TV.</h3><p>Turn on Developer options and ADB or Wireless debugging on the TV. Keep the phone and TV on the same home network, not an isolated guest network.</p></div></div>
-<div class="step"><b>3</b><div><h3>Connect and approve.</h3><p>0TV finds the TV, or enter its network address manually. Accept the approval prompt on the TV. For Wireless debugging, use the fresh pairing code and pairing port, then the connection port.</p></div></div>
-<div class="step"><b>4</b><div><h3>Review and tidy.</h3><p>Wait for the backup, then review the grouped apps and switch off what you don't want. Warnings tell you what each group changes.</p></div></div>
-<div class="step"><b>5</b><div><h3>Choose 0TV Home.</h3><p>From the hub, pick Home screen &rarr; 0TV Home. The phone app installs the bundled launcher on the TV for you.</p></div></div>
-<div class="step"><b>6</b><div><h3>Keep a way back.</h3><p>Keep the phone app installed so recovery history survives. Restore uses recorded backups and prior state; permanently deleted app data cannot be recovered.</p></div></div>
-</div>
-<p style="margin-top:22px"><a class="text-link" href="https://github.com/vio137/0TV/blob/main/docs/GUIDE.md">Open the complete guide on GitHub &nearr;</a></p>
+<section class="section" id="questions">
+  <div class="container faq-grid">
+    <div class="head-block head-block--side">
+      <h2>Plain answers</h2>
+      <p class="lead">The limits first, in the same size type.</p>
+    </div>
+    <div class="faq-list">
+      <details><summary>What does 0TV check?</summary><div><p>It reads the TV&rsquo;s real DNS setting and resolves names first.</p></div></details>
+      <details><summary>Can I undo every change?</summary><div><p>No. Restore uses recorded backups; permanently deleted app data cannot be recovered.</p></div></details>
+      <details><summary>What leaves my network?</summary><div><p>Local ADB only; optional tools call out when chosen.</p></div></details>
+    </div>
+  </div>
 </section>
 
-<section class="section">
-<div class="section-label"><span>Optional tools</span><span>Explicit choices, separate from cleanup</span></div>
-<div class="cards">
-<article class="card"><h3>Block ads. Only if you want it.</h3><p>The optional Block ads tool sets Android Private DNS to AdGuard DNS on compatible Android 9+ TVs. Normal cleanup doesn't change DNS.</p><p class="fine">DNS queries then go to a third party. Filtering can affect connectivity and does not block YouTube in-video ads. Turn it off to restore the saved prior DNS setting.</p></article>
-<article class="card"><h3>J10TV, installed from your phone.</h3><p>The optional J10TV section downloads the open-source JioTV Go app from the project's own GitHub releases and verifies the download before installing. You sign in with your own Jio account inside the app.</p><p class="fine">Only the latest stable release is offered. 0TV checks processor, Android version and free space first and handles no account credentials.</p></article>
-<article class="card"><h3>TizenTube Cobalt. A separate install.</h3><p>An optional flow downloads from the project's GitHub releases and checks the download before sending it to the TV. Not required for cleanup or 0TV Home.</p><p class="fine">Restore does not uninstall or roll back TizenTube/Cobalt. Compatibility depends on the TV. 0TV is not affiliated with YouTube or TizenTube.</p></article>
-<article class="card"><h3>App2TV, phone to TV.</h3><p>Copies an app already installed on your phone to the TV over your existing connection, with compatibility checks first.</p><p class="fine">Automated logic and screen tests pass. A physical phone-to-TV transfer has not yet been verified. See the testing notes for the exact scope.</p></article>
-</div>
+<section class="band--ink" id="download">
+  <div class="container download-grid">
+    <div class="download-text">
+      <h2>Your next Home starts here.</h2>
+      <p class="hero-actions">
+        <a class="btn btn--primary download-link" href="https://github.com/vio137/0TV/releases/download/v1.1.0/0TV-1.1.0.apk">Download 0TV APK</a>
+        <a class="btn btn--ghost" href="https://github.com/vio137/0TV/releases/tag/v1.1.0">Release notes</a>
+      </p>
+      <p class="checksum"><span class="checksum-label">SHA-256</span><code id="hash-value">deffb01fe208371d8d7a12b2e27adb74eaeafa5122904dcff5a4dd8c70fd1683</code><button id="copy-hash" type="button">Copy</button><span id="copy-status" role="status"></span></p>
+      <p class="download-caution">Read the recovery limits before changing your TV; a download does not guarantee compatibility.</p>
+      <p class="download-links"><a href="https://github.com/vio137/0TV">Explore the source</a> <a href="#guide">Read the install guide</a></p>
+    </div>
+    <figure class="download-visual" data-kind="product">
+      <img class="shot" src="assets/phone-done.png" width="600" height="1200" loading="lazy" alt="The done screen: 4 apps off, backup saved, restore one tap away">
+      <figcaption>Four apps off, restore kept. Real 1.1.0 render.</figcaption>
+    </figure>
+  </div>
 </section>
 
-<section id="questions" class="section questions">
-<div class="section-label"><span>Good to know</span><span>The details matter</span></div>
-<div class="section-heading"><h2>Clear answers.<br><em>No small print.</em></h2><p>Powerful tools deserve plain language. Start with the limits as well as the possibilities.</p></div>
-<div class="faq-list">
-<details><summary>Will it work with my TV?<span>+</span></summary><div><p>The companion phone needs Android 8.0 or newer. Android TV and Google TV are the primary targets. ADB debugging and network access must be available. Manufacturer firmware can change what works.</p><p>Fire TV has a limited cleanup/remote path; replacing Amazon's Home is not promised. Samsung Tizen and LG webOS are not supported Android TV targets. No blanket model-compatibility claim is made.</p></div></details>
-<details><summary>What does 0TV check?<span>+</span></summary><div><p>0TV reads the TV's real Private DNS setting and checks that names resolve before it reports ad blocking as on. Phone images on this page are real renders of the app's own screens. Exact test scope is in <a href="https://github.com/vio137/0TV/blob/main/docs/TESTING.md">docs/TESTING.md</a>.</p></div></details>
-<details><summary>Can I undo every change?<span>+</span></summary><div><p>No. Restore uses recorded backups and prior state. Keep the phone app installed and keep recovery records. Uninstalling the phone app can remove its local history. Permanently deleted app data cannot be recovered by 0TV.</p><p>Restore does not roll back a TizenTube/Cobalt install. Record checks require Android user 0 and a matching Android-ID hash; resets, changed IDs, missing or corrupt records can prevent recovery. Launcher rollback is a safeguard, not a substitute for the TV maker's recovery instructions.</p></div></details>
-<details><summary>Why doesn't my TV appear?<span>+</span></summary><div><p>Put the phone and TV on the same home network, not an isolated guest network. Check Developer options and the debugging setting. Enter the TV's current network address manually if discovery misses it. Accept the approval prompt on the TV.</p><p>For Wireless debugging, use the fresh pairing code and pairing port shown by the TV, then its connection port. Menus vary. Never expose ADB to the public internet or disable its approval checks.</p></div></details>
-<details><summary>Which Home should I pick?<span>+</span></summary><div><p>Choose &ldquo;0TV Home&rdquo; for the redesigned screen. &ldquo;Simple&rdquo; and the original Dock-style choice are different launchers. The phone app installs the chosen bundled launcher; there is no separate launcher APK for you to manage.</p><p>Clock/header elements can be hidden when the TV reports an invalid date. The app grid can show multiple installed launchers with the same upstream &ldquo;Home&rdquo; label.</p></div></details>
-<details><summary>What leaves my network?<span>+</span></summary><div><p>The main connection is local ADB between your phone and TV. This build has no analytics, crash reporter, automatic update check or feedback upload. Feedback opens Android's share sheet, so you choose whether and where to send it.</p><p>The optional Cobalt and J10TV flows contact GitHub. Optional DNS filtering sends the TV's DNS queries to AdGuard. This website uses no analytics, cookies or third-party scripts; GitHub still serves the site and downloads.</p></div></details>
-<details><summary>How do I build it or report a problem?<span>+</span></summary><div><p>The public repository contains the Android companion, the 0TV Home fork, tests, pinned-input instructions, licences and build notes. Developer builds use a different signing key unless you supply your own. They cannot update the published app in place without its original signing identity.</p><p>Read <a href="https://github.com/vio137/0TV/blob/main/docs/BUILDING.md">Building from source</a> or <a href="https://github.com/vio137/0TV/issues">open an issue</a>. Share your model, Android version, what you expected and what happened. Inspect and redact logs before posting them publicly.</p></div></details>
-</div>
-</section>
-
-<section id="download" class="download-section">
-<div class="section-label"><span>Download</span><span>Make room for better</span></div>
-<h2>Your next<br><em>Home starts here.</em></h2>
-<div class="download-row">
-<div><a class="button download-link" href="https://github.com/vio137/0TV/releases/download/v1.1.0/0TV-1.1.0.apk">Download 0TV APK &darr;</a><p class="micro">1.1.0 &middot; 24,743,846 bytes<br>Android 8+ phone &middot; ARM64 / ARMv7<br>Installs in place over 1.0.0-rc8</p></div>
-<div class="download-links"><a class="text-link" href="https://github.com/vio137/0TV/releases/tag/v1.1.0">Release notes &amp; verification &nearr;</a><a class="text-link" href="https://github.com/vio137/0TV">Explore the source &nearr;</a><a class="text-link" href="#guide">Read the install guide &nearr;</a></div>
-</div>
-<div class="checksum"><span>SHA-256 &middot; tap to copy</span><button id="copy-hash">deffb01fe208371d8d7a12b2e27adb74eaeafa5122904dcff5a4dd8c70fd1683</button><span id="copy-status" role="status"></span></div>
-<p class="download-caution">Back up first. Read the recovery limits before changing your TV. An APK download does not guarantee compatibility with your model.</p>
-</section>
 </main>
-<footer><div class="footer-top"><a class="brand" href="#">0TV</a><p>Designed &amp; customized by<br><b>ARNAB MANDAL</b></p><div><span>arnabmandal.com</span><a href="mailto:arnab@ik.me">arnab@ik.me &nearr;</a><a href="https://github.com/vio137">GitHub / vio137 &nearr;</a></div></div>
-<p>Built on TidyTV, cleanyourtv and tv-detox. Their authors keep their credit. Interface design method: unslop by Damir Sokolovsky (@heydamir), CC BY 4.0. Combined APK: GPL-3.0; individual components retain their licences. <a href="https://github.com/vio137/0TV/blob/main/NOTICE">Credits &amp; licences &nearr;</a></p>
-<div class="footer-bottom"><span>&copy; 2026 ARNAB MANDAL &amp; respective contributors</span><span>Not affiliated with Google, Amazon or TV manufacturers.</span><button id="motion-toggle" aria-pressed="false">Pause motion</button></div></footer>
-<dialog id="lightbox"><button class="close-lightbox" aria-label="Close enlarged screenshot">Close &times;</button><img alt="Enlarged 0TV screenshot"><p>Real render of the 0TV app.</p></dialog></body></html>
+
+<footer>
+  <div class="container">
+    <div class="footer-columns">
+      <div>
+        <h2 class="footer-wordmark">0TV</h2>
+        <p class="footer-tag">A calmer Android TV starts on your phone.</p>
+      </div>
+      <nav aria-label="Documentation">
+        <h3>The book</h3>
+        <a href="https://github.com/vio137/0TV/blob/main/docs/GUIDE.md">Guide</a>
+        <a href="https://github.com/vio137/0TV/blob/main/docs/TESTING.md">Testing notes</a>
+        <a href="https://github.com/vio137/0TV/blob/main/docs/BUILDING.md">Building</a>
+        <a href="https://github.com/vio137/0TV/blob/main/docs/RECOVERY.md">Recovery</a>
+        <a href="https://github.com/vio137/0TV/blob/main/docs/PRIVACY.md">Privacy</a>
+      </nav>
+      <nav aria-label="Project">
+        <h3>The project</h3>
+        <a href="https://github.com/vio137/0TV">Source</a>
+        <a href="https://github.com/vio137/0TV/releases">Releases</a>
+        <a href="https://github.com/vio137/0TV/issues">Report an issue</a>
+        <a href="https://github.com/vio137/0TV/blob/main/NOTICE">Credits and licences</a>
+      </nav>
+      <nav aria-label="Author">
+        <h3>The author</h3>
+        <a href="https://arnabmandal.com">arnabmandal.com</a>
+        <a href="mailto:arnab@ik.me">arnab@ik.me</a>
+        <a href="https://github.com/vio137">GitHub, vio137</a>
+      </nav>
+    </div>
+    <p class="credits" data-credits>Built on TidyTV, cleanyourtv and tv-detox; their authors keep their credit. Interface design method: unslop by Damir Sokolovsky (@heydamir), CC BY 4.0. Combined APK: GPL-3.0; individual components retain their licences. Set in Hanken Grotesk, Newsreader and IBM Plex Mono under the SIL Open Font License 1.1.</p>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Arnab Mandal and respective contributors.</span>
+      <span>Not affiliated with Google, Amazon or TV manufacturers.</span>
+    </div>
+  </div>
+</footer>
+
+<dialog id="lightbox"><button class="close-lightbox" type="button" aria-label="Close enlarged screenshot">Close</button><p>Real render of the 0TV app.</p></dialog>
+</body>
+</html>

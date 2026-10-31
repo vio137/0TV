@@ -40,3 +40,5 @@ keys/
 **/build/
 **/signing.properties
 upstream/cleanyourtv/
+website/.hallmark/shots/
+website/.hallmark/before/

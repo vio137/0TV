@@ -1,9 +1,9 @@
 {
-  "version": "1.0.0-rc8",
-  "version_code": 8,
-  "tag": "v1.0.0-rc8",
-  "asset": "0TV-1.0.0-rc8.apk",
-  "bytes": 24626870,
-  "sha256": "9a2c296d26a1d0f45bb80d7656325f1997556bd379adc490614ff0a2f2c8acdc",
-  "url": "https://github.com/vio137/0TV/releases/download/v1.0.0-rc8/0TV-1.0.0-rc8.apk"
+  "version": "1.1.0",
+  "version_code": 9,
+  "tag": "v1.1.0",
+  "asset": "0TV-1.1.0.apk",
+  "bytes": 24743846,
+  "sha256": "deffb01fe208371d8d7a12b2e27adb74eaeafa5122904dcff5a4dd8c70fd1683",
+  "url": "https://github.com/vio137/0TV/releases/download/v1.1.0/0TV-1.1.0.apk"
 }

@@ -336,6 +336,7 @@
     let mx = -100, my = -100, rx2 = -100, ry2 = -100;
     window.addEventListener("mousemove", (e) => {
       mx = e.clientX; my = e.clientY;
+      document.documentElement.classList.add("cursor-on");
       curDot.style.transform = `translate3d(${mx}px,${my}px,0) translate(-50%,-50%)`;
     }, { passive: true });
     const curLoop = () => {

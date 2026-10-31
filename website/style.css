@@ -1137,6 +1137,9 @@ footer nav a:hover { padding-left: 5px; }
   border-radius: 50%; pointer-events: none;
 }
 .cursor-dot { width: 6px; height: 6px; background: var(--accent-2); box-shadow: 0 0 10px rgba(110, 168, 255, 0.9); }
+.cursor-dot, .cursor-ring { opacity: 0; transition: opacity 0.3s; }
+.cursor-on .cursor-dot, .cursor-on .cursor-ring { opacity: 1; }
+.cursor-ring { transition: width 0.28s var(--ease-out), height 0.28s var(--ease-out), border-color 0.28s, opacity 0.3s; }
 .cursor-ring {
   width: 34px; height: 34px;
   border: 1.5px solid rgba(110, 168, 255, 0.45);

@@ -8,11 +8,11 @@
 Debloat your Android TV from your Android phone.<br>
 No laptop. No desktop. No Claude Code required.
 
-<a href="https://github.com/vio137/0TV/releases/download/v1.1.0/0TV-1.1.0.apk"><img src="website/assets/download-apk.svg" width="280" alt="Download 0TV APK for Android 8 or newer"></a>
+<a href="https://github.com/vio137/0TV/releases/download/v1.1.1/0TV-1.1.1.apk"><img src="website/assets/download-apk.svg" width="280" alt="Download 0TV APK for Android 8 or newer"></a>
 
-**[Download APK](https://github.com/vio137/0TV/releases/download/v1.1.0/0TV-1.1.0.apk)** · **[Website](https://vio137.github.io/0TV/)** · **[Setup guide](docs/GUIDE.md)**
+**[Download APK](https://github.com/vio137/0TV/releases/download/v1.1.1/0TV-1.1.1.apk)** · **[Website](https://vio137.github.io/0TV/)** · **[Setup guide](docs/GUIDE.md)**
 
-`1.1.0` · `Android 8+ phone` · `Free & open source`
+`1.1.1` · `Android 8+ phone` · `Free & open source`
 
 Install on your **phone**, not on your TV. The app installs the TV launcher for you.
 
@@ -22,7 +22,7 @@ Install on your **phone**, not on your TV. The app installs the TV launcher for 
 <td><img src="website/assets/phone-review.png" width="240" alt="Review screen grouping preloaded apps, backup saved first"></td>
 </tr></table>
 
-<sub>Real renders of the app's own screens, version 1.1.0.</sub>
+<sub>Real renders of the app's own screens, version 1.1.1.</sub>
 </div>
 
 ## Start here
@@ -75,22 +75,22 @@ Press Up, Up, Down, Down, Left, Right, Left, Right on the TV remote for a cracke
 
 ## Download & verify
 
-If the button does not start a download, use the **[plain APK link](https://github.com/vio137/0TV/releases/download/v1.1.0/0TV-1.1.0.apk)** or open **[all releases](https://github.com/vio137/0TV/releases)** and select the APK under Assets.
+If the button does not start a download, use the **[plain APK link](https://github.com/vio137/0TV/releases/download/v1.1.1/0TV-1.1.1.apk)** or open **[all releases](https://github.com/vio137/0TV/releases)** and select the APK under Assets.
 
-- **Version:** 1.1.0 / versionCode 9
+- **Version:** 1.1.1 / versionCode 10
 - **Package:** `app.tvtidy.cleaner`
 - **Phone:** Android 8.0+ (API 26), ARM64 / ARMv7
-- **Size:** 24,743,846 bytes
-- **Updates:** installs in place over 1.0.0-rc8 (same signing identity)
+- **Size:** 22,307,738 bytes
+- **Updates:** installs in place over 1.1.0 and 1.0.0-rc8 (same signing identity)
 
 SHA-256:
 ```text
-deffb01fe208371d8d7a12b2e27adb74eaeafa5122904dcff5a4dd8c70fd1683
+26f660036f27b1413ffa32223221e2f19d6b2d5fb0900e5157e4fa399174c9fb
 ```
 
 On a computer, if you want to verify the file:
 ```sh
-sha256sum 0TV-1.1.0.apk
+sha256sum 0TV-1.1.1.apk
 ```
 
 The app itself does not need a computer. Use this repository's release assets, not a third-party reupload. Local builds use a different signing key unless the original signing identity is supplied.
@@ -137,6 +137,8 @@ JDK 21 and Android SDK platform 37 are needed for the companion. The launcher fo
 
 **0TV design and customizations: ARNAB MANDAL**<br>
 arnabmandal.com · [arnab@ik.me](mailto:arnab@ik.me) · [GitHub / vio137](https://github.com/vio137)
+
+**New in 1.1.1:** fixes the Google TV Streamer remote's star (customizable) button and its missing Settings entry after a 0TV home-screen handover - the handover no longer disables Google's stock launcher when the firmware honors the Home preference, so the star button and Cast keep working. Firmware that ignores the preference keeps the old behavior. Fixes [#1](https://github.com/vio137/0TV/issues/1).
 
 **New in 1.1.0:** a full visual redesign of the app and 0TV Home - one calm dark palette, a single blue accent, sentence case, solid buttons, and no colour wash or frosted glass on the TV. Interface design method: [unslop](https://github.com/heydamir/unslop) by Damir Sokolovsky (@heydamir), CC BY 4.0.
 

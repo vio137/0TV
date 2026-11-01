@@ -71,7 +71,7 @@ class UpkeepTest {
         val log = MemoryActionLog()
         LauncherHandover(tv, log, clock = { 5L }, sleep = {}).run(ByteArray(10), emptyList(), sdk = 30)
         assertFalse(TvCheck(tv, log).run(emptyList(), null).homeChanged)
-        // A firmware update re-enables launcherx and makes it Home again.
+        // A firmware update makes launcherx Home again (it was never turned off on this TV).
         tv.disabled -= Launchers.LAUNCHERX
         tv.preferredHome = Launchers.LAUNCHERX + "/.MainActivity"
         assertTrue(TvCheck(tv, log).run(emptyList(), null).homeChanged)
@@ -94,7 +94,7 @@ class UpkeepTest {
         assertEquals(listOf(HomeApp.PROJECTIVY.pkg), tv.playStoreOpened)
         val log = MemoryActionLog()
         val out = LauncherHandover(tv, log, clock = { 5L }, sleep = {}, app = HomeApp.PROJECTIVY).run(ByteArray(0), emptyList(), sdk = 30)
-        assertEquals(HandoverOutcome.Done(Launchers.LAUNCHERX), out)
+        assertEquals(HandoverOutcome.Done(null), out)
         assertEquals("com.spocky.projengmenu/.ui.home.MainActivity", tv.home())
         assertTrue("nothing pushed or installed by TidyTV", tv.pushed.isEmpty() && tv.commands.none { it == Commands.INSTALL_TMP })
         assertFalse(log.records().launcherInstalledByUs(HomeApp.PROJECTIVY.pkg, "x"))

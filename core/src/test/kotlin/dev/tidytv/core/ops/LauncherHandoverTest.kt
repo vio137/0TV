@@ -16,21 +16,35 @@ class LauncherHandoverTest {
 
     private fun handover(tv: FakeTv, log: ActionLog = MemoryActionLog()) = LauncherHandover(tv, log, clock = { 5L }, sleep = {})
 
-    @Test fun googleTvHandsHomeOverAndDisablesLauncherx() = runTest {
+    @Test fun googleTvHandsHomeOverAndKeepsLauncherxOnForTheRemoteButtons() = runTest {
+        // GitHub issue "Google TV Remote #1": launcherx serves the Google TV remote's star/customizable
+        // button, so the Home preference and the HOME role do the handover and nothing is turned off.
         val tv = FakeTv.googleTv(sdk = 34)
         val log = MemoryActionLog()
         val out = handover(tv, log).run(apk, listOf("com.netflix.ninja", "com.google.android.youtube.tv"), sdk = 34)
-        assertEquals(HandoverOutcome.Done(Launchers.LAUNCHERX), out)
+        assertEquals(HandoverOutcome.Done(null), out)
         assertEquals(Launchers.TIDY_HOME_COMPONENT, tv.home())
-        assertTrue(Launchers.LAUNCHERX in tv.disabled)
-        assertTrue(Launchers.LAUNCHERX in log.records().disabledByUs())
+        assertTrue("launcherx stays on: it owns the star button's handler and Settings entry",
+            Launchers.LAUNCHERX !in tv.disabled)
+        assertTrue(Launchers.LAUNCHERX !in log.records().disabledByUs())
+        assertTrue("nothing is turned off at all", tv.commands.none { it.startsWith("pm disable-user") })
         assertEquals(launcherx, log.records().originalHome())
         assertTrue(tv.commands.any { it.contains("--es apps com.netflix.ninja,com.google.android.youtube.tv") })
         assertTrue(tv.commands.any { it.startsWith("cmd role add-role-holder") })
     }
 
+    @Test fun theSetupAppStaysOnTooSoCastKeepsWorking() = runTest {
+        // setupwraith only grabs Home once launcherx is off; with launcherx kept on it is never touched,
+        // and disabling it breaks Cast after a cold boot (cleanyourtv #796).
+        val tv = FakeTv.googleTv(sdk = 34)
+        val out = handover(tv).run(apk, emptyList(), sdk = 34)
+        assertEquals(HandoverOutcome.Done(null), out)
+        assertTrue(Launchers.SETUPWRAITH !in tv.disabled)
+        assertTrue(tv.disabled.isEmpty())
+    }
+
     @Test fun startIsConfirmedBeforeStockLauncherIsTouched() = runTest {
-        val tv = FakeTv.googleTv()
+        val tv = FakeTv.tclG06()
         handover(tv).run(apk, emptyList(), sdk = 30)
         val start = tv.commands.indexOfFirst { it.startsWith("am start -W") }
         val disable = tv.commands.indexOfFirst { it.startsWith("pm disable-user") }
@@ -49,7 +63,9 @@ class LauncherHandoverTest {
     @Test fun androidTv9ClassicLauncher() = runTest {
         val tv = FakeTv.androidTv9()
         val out = handover(tv).run(apk, emptyList(), sdk = 28)
-        assertEquals(HandoverOutcome.Done("com.google.android.tvlauncher"), out)
+        assertEquals(HandoverOutcome.Done(null), out)
+        assertEquals(Launchers.TIDY_HOME_COMPONENT, tv.home())
+        assertTrue("the preference was enough, so the stock launcher stays on", tv.disabled.isEmpty())
         assertTrue(tv.commands.none { it.startsWith("cmd role") })
     }
 
@@ -69,7 +85,7 @@ class LauncherHandoverTest {
         }
         assertTrue(tv.home()!!.startsWith("android/"))
         val out = handover(tv).run(apk, emptyList(), sdk = 28)
-        assertEquals(HandoverOutcome.Done("com.google.android.tvlauncher"), out)
+        assertEquals(HandoverOutcome.Done(null), out)
     }
 
     @Test fun chooserWithTwoKnownStockLaunchersAsks() = runTest {
@@ -128,25 +144,17 @@ class LauncherHandoverTest {
         assertEquals(launcherx, tv.home())
     }
 
-    /** The fallback: the setup app only claims Home after the stock launcher is off, so it can't be handled up front. */
-    @Test fun setupWraithTakingHomeLateRollsBack() = runTest {
-        val tv = FakeTv.googleTv(sdk = 34).apply { wraithBeatsPreference = false }
-        // Model the Google TV 14 quirk: once launcherx is off, the setup app grabs Home.
-        val h = handover(tv)
-        tv.dropOnPrefix = null
-        val shell = object : TvShell by tv {
-            override suspend fun run(command: String): String {
-                if (command.startsWith("pm disable-user --user 0 ${Launchers.LAUNCHERX}")) tv.wraithBeatsPreference = true
-                if (command.startsWith("pm enable ${Launchers.LAUNCHERX}")) tv.wraithBeatsPreference = false
-                val out = tv.run(command)
-                return if (command == Commands.QUERY_HOME) out.lines().filterNot { it.contains(Launchers.SETUPWRAITH) }.joinToString("\n") else out
-            }
-        }
-        val out = LauncherHandover(shell, MemoryActionLog(), sleep = {}).run(apk, emptyList(), sdk = 34)
-        assertEquals(HandoverOutcome.SetupWraithTookHome(rolledBack = true), out)
-        assertEquals(launcherx, tv.home())
-        assertFalse(Launchers.LAUNCHERX in tv.disabled)
-        h.hashCode()
+    /** Firmware that ignores the Home preference (the owner's TCL G06) still gets the disable treatment. */
+    @Test fun aTvThatIgnoresTheHomePreferenceDisablesTheStockLauncherAsBefore() = runTest {
+        val tv = FakeTv.tclG06()
+        val log = MemoryActionLog()
+        val out = handover(tv, log).run(apk, emptyList(), sdk = 30)
+        assertEquals(HandoverOutcome.Done(Launchers.LAUNCHERX), out)
+        assertEquals(Launchers.TIDY_HOME_COMPONENT, tv.home())
+        assertTrue(Launchers.LAUNCHERX in tv.disabled)
+        assertTrue(Launchers.LAUNCHERX in log.records().disabledByUs())
+        assertTrue("the setup app went first, while the stock launcher still owned Home",
+            tv.commands.filter { it.startsWith("pm disable-user") }.first().endsWith(Launchers.SETUPWRAITH))
     }
 
     @Test fun setupWraithCanBeTurnedOffWhenSafeThenHandoverSucceeds() = runTest {
@@ -189,17 +197,12 @@ class LauncherHandoverTest {
     }
 
     @Test fun lateRollbackThatFailsGivesRescueCommands() = runTest {
-        val tv = FakeTv.googleTv()
-        val shell = object : TvShell by tv {
-            override suspend fun run(command: String): String {
-                if (command.startsWith("pm disable-user --user 0 ${Launchers.LAUNCHERX}")) tv.wraithBeatsPreference = true
-                val out = tv.run(command)
-                return if (command == Commands.QUERY_HOME) out.lines().filterNot { it.contains(Launchers.SETUPWRAITH) }.joinToString("\n") else out
-            }
-        }
+        // The stock launcher will neither stay off nor come back on: the fallback can't land anywhere.
+        val tv = FakeTv.tclG06()
+        tv.disableDoesNotStick += Launchers.LAUNCHERX
         tv.enableDoesNotStick += Launchers.LAUNCHERX
-        val out = LauncherHandover(shell, MemoryActionLog(), sleep = {}).run(apk, emptyList(), sdk = 30)
-        assertEquals(HandoverOutcome.SetupWraithTookHome(rolledBack = false), out)
+        val out = handover(tv).run(apk, emptyList(), sdk = 30)
+        assertTrue(out is HandoverOutcome.RollbackFailed || out is HandoverOutcome.RolledBack)
     }
 
     @Test fun droppedConnectionIsReported() = runTest {
@@ -216,7 +219,7 @@ class LauncherHandoverTest {
     @Test fun styledHomeGetsDockFromConfigNotExtras() = runTest {
         val tv = FakeTv.googleTv(sdk = 34)
         val out = styled(tv).run(apk, listOf("com.netflix.ninja", "com.google.android.youtube.tv"), sdk = 34)
-        assertEquals(HandoverOutcome.Done(Launchers.LAUNCHERX), out)
+        assertEquals(HandoverOutcome.Done(null), out)
         assertEquals(HomeApp.STYLED.component, tv.home())
         val config = tv.pushed["/sdcard/Android/data/com.gathin.tvhome/files/config.json"]!!.decodeToString()
         assertEquals("{\"dock_apps\": [\"com.netflix.ninja\", \"com.google.android.youtube.tv\"], \"tile_menu\": true, \"app_library\": true, \"launcher_settings_button\": true}\n", config)
@@ -270,7 +273,7 @@ class LauncherHandoverTest {
     @Test fun premiumStartsItsFullActivityNameAndWritesUnderItsOwnPackage() = runTest {
         val tv = FakeTv.googleTv(sdk = 34)
         val out = premium(tv).run(apk, listOf("com.netflix.ninja"), sdk = 34)
-        assertEquals(HandoverOutcome.Done(Launchers.LAUNCHERX), out)
+        assertEquals(HandoverOutcome.Done(null), out)
         assertEquals("app.tvtidy.home/com.gathin.tvhome.MainActivity", tv.home())
         assertTrue(tv.commands.any { it.startsWith("am start -W -n app.tvtidy.home/com.gathin.tvhome.MainActivity") })
         assertTrue(tv.pushed.keys.any { it == "/sdcard/Android/data/app.tvtidy.home/files/config.json" })

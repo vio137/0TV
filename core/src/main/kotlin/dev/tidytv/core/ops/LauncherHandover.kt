@@ -4,6 +4,7 @@ import dev.tidytv.core.lists.HomeApp
 import dev.tidytv.core.lists.Launchers
 
 sealed interface HandoverOutcome {
+    /** [disabledStock]: the stock launcher that was turned off, or null when the Home preference alone was enough. */
     data class Done(val disabledStock: String?) : HandoverOutcome
     /** Home is Android's chooser and it is unclear which launcher is the stock one. */
     data class NeedsChoice(val claimants: Set<String>) : HandoverOutcome
@@ -168,24 +169,34 @@ class LauncherHandover(
             tv.run(Commands.restartLook(ourPkg))
         }
 
-        // 4. Google TV's setup app claims Home at priority 1 and takes it as soon as the stock launcher is off
-        // (a recovery screen on TCL). Turn it off first, while the stock launcher still owns Home, like upstream's
-        // tested order, but only when that's safe: it must not own the saved Wi-Fi, and setup must be finished.
-        if (stock != null) prepareSetupApp()?.let { return it }
-
-        // 5. Make it Home, then turn the stock launcher off, then set Home again.
+        // 4. Make it Home and ask Android where Home points now. On most TVs the preference (plus the HOME
+        // role) is enough, and the stock launcher stays on and keeps serving whatever it owns. On Google TV
+        // that matters: with launcherx disabled the remote's star/customizable button has no handler, its
+        // entry disappears from Settings > Remotes & Accessories > Set up remote buttons, and some Assistant
+        // behaviour degrades (GitHub issue "Google TV Remote #1").
         log.append(ActionRecord(clock(), Op.SET_HOME, ours, Phase.INTENT, before = homeBefore))
         setOurs(sdk)
-        if (stock != null && !isPersistent(stock)) {
-            if (!Parse.lines(tv.run(Commands.mirror(listOf(stock)))).contains("ok")) {
-                return rollback(stock, sdk)
+        var disabledStock: String? = null
+        if (stock != null && Parse.component(tv.run(Commands.RESOLVE_HOME))?.substringBefore('/') != ourPkg) {
+            // The preference is ignored (firmware like the TCL G06's always gives Home to the enabled launcher
+            // with the highest priority): the stock launcher has to go off after all.
+            // Google TV's setup app claims Home at priority 1 and takes it as soon as the stock launcher is off
+            // (a recovery screen on TCL). Turn it off first, while the stock launcher still owns Home, like
+            // upstream's tested order, but only when that's safe: it must not own the saved Wi-Fi, and setup
+            // must be finished.
+            prepareSetupApp()?.let { return it }
+            if (!isPersistent(stock)) {
+                if (!Parse.lines(tv.run(Commands.mirror(listOf(stock)))).contains("ok")) {
+                    return rollback(stock, sdk)
+                }
+                log.append(ActionRecord(clock(), Op.DISABLE, stock, Phase.INTENT))
+                tv.run(Commands.disable(stock))
+                val off = stock in Parse.packages(tv.run(Commands.LIST_DISABLED))
+                log.append(ActionRecord(clock(), Op.DISABLE, stock, if (off) Phase.DONE else Phase.FAILED))
+                if (off) disabledStock = stock
+                sleep(Debloater.SAVE_WAIT_MS)
+                setOurs(sdk)
             }
-            log.append(ActionRecord(clock(), Op.DISABLE, stock, Phase.INTENT))
-            tv.run(Commands.disable(stock))
-            val off = stock in Parse.packages(tv.run(Commands.LIST_DISABLED))
-            log.append(ActionRecord(clock(), Op.DISABLE, stock, if (off) Phase.DONE else Phase.FAILED))
-            sleep(Debloater.SAVE_WAIT_MS)
-            setOurs(sdk)
         }
 
         // 6. Check where Home landed: Android's answer, then a real Home press from another app.
@@ -194,7 +205,7 @@ class LauncherHandover(
         val pressOpens = if (resolvesToUs) homeKeyOpens() else null
         if (resolvesToUs && (pressOpens == null || pressOpens == ourPkg)) {
             log.append(ActionRecord(clock(), Op.SET_HOME, ours, Phase.DONE, before = homeBefore))
-            return HandoverOutcome.Done(stock)
+            return HandoverOutcome.Done(disabledStock)
         }
         val landed = if (resolvesToUs) pressOpens else homeNow
         log.append(ActionRecord(clock(), Op.SET_HOME, ours, Phase.FAILED, before = homeBefore, detail = "home is $landed"))
